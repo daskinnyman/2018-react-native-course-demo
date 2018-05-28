@@ -21,11 +21,30 @@ export default class UserLogin extends React.Component {
       //利用credential登入firebase
       firebase
         .auth()
-        .signInAndRetrieveDataWithCredential(credential)
-        .then(res => {
-          //登入成功的邏輯
-          console.log(res);
-          console.log(123);
+        .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+        .then(() => {
+          firebase
+            .auth()
+            .signInAndRetrieveDataWithCredential(credential)
+            .then(res => {
+              //登入成功的邏輯
+              const { user, additionalUserInfo } = res;
+              let userData = {
+                name: user.displayName,
+                uid: user.uid,
+                avatar: user.photoURL
+              };
+              if (additionalUserInfo.isNewUser) {
+                firebase
+                  .database()
+                  .ref(`users/${user.uid}`)
+                  .set(userData);
+                return;
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
         })
         .catch(error => {
           // Handle Errors here.
