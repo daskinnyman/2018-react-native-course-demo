@@ -3,7 +3,7 @@ import React from 'react';
 import { Text, View, Dimensions } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import { styles } from './crash-map-style';
-import firebase from 'firebase';
+import * as firebase from 'firebase';
 import GeoFire from 'geofire';
 
 export default class CrashMap extends React.Component {
@@ -134,7 +134,6 @@ export default class CrashMap extends React.Component {
           loadingEnabled
           style={styles.map}
           showsUserLocation={true}
-          showsMyLocationButton={true}
           onRegionChange={this._onRegionChange}
           region={{
             latitude: this.state.latitude,
