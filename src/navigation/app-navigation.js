@@ -25,11 +25,11 @@ export const DrawerRouter = createDrawerNavigator(
     contentOptions: {
       activeTintColor: "#67C2AC"
     },
-    contentComponent: props => (
-      <View>
-        <DrawerItems {...props} />
-        <Logout {...props} />
-      </View>
-    )
+    // contentComponent: props => (
+    //   <View>
+    //     <DrawerItems {...props} />
+    //     <Logout {...props} />
+    //   </View>
+    // )
   }
 );
