@@ -4,7 +4,7 @@ import { Text, View, TouchableOpacity } from 'react-native';
 import { Camera, Permissions } from 'expo';
 import firebase from 'firebase';
 
-class PostCrash extends Component {
+class PostCrashCamera extends Component {
   constructor(props) {
     super(props);
     this.storageRef = firebase.storage().ref();
@@ -21,18 +21,26 @@ class PostCrash extends Component {
 
   _handleTakePicture = async () => {
     if (this.camera) {
-      this.camera.takePictureAsync({ base64: true }).then(data => {
-        console.log(data);
-        let name = data.uri.split('Camera/')[1];
-        let base64 = data.base64;
-        this.storageRef
-          .child(`picture/${name}`)
-          .putString(base64, 'base64')
-          .then(snapshot => {
-            console.log('Uploaded a base64 string!');
-            console.log(snapshot);
-          });
-      });
+      this.camera
+        .takePictureAsync({ quality: 0.5, base64: true })
+        .then(data => {
+          console.log(data);
+          let name = data.uri.split('Camera/')[1];
+          let base64 = data.base64;
+          this.storageRef
+            .child(`picture/${name}`)
+            .putString(base64, 'base64')
+            .then(snapshot => {
+              console.log(snapshot);
+              if (snapshot.state) {
+                snapshot.ref.getDownloadURL().then(url => {
+                  this.props.navigation.navigate('PostInput', {
+                    url
+                  });
+                });
+              }
+            });
+        });
     }
   };
 
@@ -113,4 +121,4 @@ class PostCrash extends Component {
   }
 }
 
-export default PostCrash;
+export default PostCrashCamera;
