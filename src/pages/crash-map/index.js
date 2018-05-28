@@ -6,7 +6,7 @@ import CrashMapPage from "./crash-map";
 
 //在react-navigation 2.0版，
 //StackNavigator改為createStackNavigator
-export const HomeStack = createStackNavigator({
+export const MapStack = createStackNavigator({
     Login: {
         screen: CrashMapPage,
         navigationOptions: ({ navigation }) => ({
