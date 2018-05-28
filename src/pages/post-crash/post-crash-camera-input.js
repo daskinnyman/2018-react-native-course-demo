@@ -1,20 +1,21 @@
 //發文頁面
 import React, { Component } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, Image } from 'react-native';
 import firebase from 'firebase';
 import geofire from 'geofire';
 
 class PostCrashInput extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { url: this.props.navigation.state.params.url };
   }
-  componentDidMount = () => {
-    console.log(this.props.navigation.state.params);
-  }
-  
+
   render() {
-    return <View />;
+    return (
+      <View>
+        <Image style={{width:365,height:200}} source={{ uri: this.state.url }} />
+      </View>
+    );
   }
 }
 
