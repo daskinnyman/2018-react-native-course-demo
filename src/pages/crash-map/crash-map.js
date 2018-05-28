@@ -99,13 +99,8 @@ export default class CrashMap extends React.Component {
    */
   _getNearbyUser = async (lat, lng) => {
     let center = [lat, lng];
-    console.log(center);
     let geoQuery = this.geoFire.query({ center, radius: 10 });
-    var onKeyEnteredRegistration = geoQuery.on('key_entered', function(
-      key,
-      location,
-      distance
-    ) {
+    geoQuery.on('key_entered', (key, location, distance) => {
       console.log(
         key +
           ' entered query at ' +
