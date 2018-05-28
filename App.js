@@ -1,8 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { AppRouter } from './src/navigation/auth-navigation'
+import { AppRouter } from './src/navigation/auth-navigation';
+import firebase from 'firebase';
+import {config} from './src/config/firebase-config'
 
 export default class App extends React.Component {
+  componentDidMount() {
+    firebase.initializeApp(config);
+  }
   render() {
     return (
         <AppRouter />
