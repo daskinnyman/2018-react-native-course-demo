@@ -4,10 +4,8 @@ import { AppRouter } from './src/navigation/auth-navigation';
 import firebase from 'firebase';
 import {config} from './src/config/firebase-config'
 export default class App extends React.Component {
-  componentDidMount() {
-    firebase.initializeApp(config);
-  }
   render() {
+    firebase.initializeApp(config);
     return (
         <AppRouter />
     );

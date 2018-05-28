@@ -4,11 +4,15 @@ import { Text, View, Dimensions } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import { styles } from './crash-map-style';
 import firebase from 'firebase';
-
+import GeoFire from 'geofire';
 
 export default class CrashMap extends React.Component {
   constructor(props) {
     super(props);
+    //設定firebase
+    this.fbRef = firebase.database().ref();
+    this.geoRef = this.fbRef.child('_GEOFIRE');
+    this.geoFire = new GeoFire(this.geoRef);
     this.user = firebase.auth().currentUser;
     //初始化state
     this.state = {
@@ -29,12 +33,6 @@ export default class CrashMap extends React.Component {
     await this._getGeolocation();
     //監看使用者位置
     await this._watchGeolocation();
-    //存入firebase
-    if (this.user) {
-      console.log(this.user);
-      //撈取附近使用者
-      this._getNearbyUser(this.state.current_lat,this.state.current_lng);
-    }
   }
   /**
    * 取得撞車的地區
@@ -51,8 +49,17 @@ export default class CrashMap extends React.Component {
       });
     }
 
-    let location =await Location.getCurrentPositionAsync({});
-    console.log(location);
+    let location = await Location.getCurrentPositionAsync({});
+    this.geoFire
+      .set('some_key', [location.coords.latitude, location.coords.longitude])
+      .then(
+        function() {
+          console.log('Provided key has been added to GeoFire');
+        },
+        function(error) {
+          console.log('Error: ' + error);
+        }
+      );
     this.setState({
       latitude: location.coords.latitude,
       longitude: location.coords.longitude
@@ -61,7 +68,7 @@ export default class CrashMap extends React.Component {
 
   /**
    * 監看位置
-   * 
+   *
    */
   _watchGeolocation = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -74,6 +81,10 @@ export default class CrashMap extends React.Component {
     Location.watchPositionAsync(
       { enableHighAccuracy: true, distanceInterval: 20 },
       location => {
+        this._getNearbyUser(
+          location.coords.latitude,
+          location.coords.longitude
+        );
         this.setState({
           current_lat: location.coords.latitud,
           current_lng: location.coords.longitude
@@ -87,8 +98,25 @@ export default class CrashMap extends React.Component {
    * @param {any} lng
    */
   _getNearbyUser = async (lat, lng) => {
-    console.log(lat,lng);
+    let center = [lat, lng];
+    console.log(center);
+    let geoQuery = this.geoFire.query({ center, radius: 10 });
+    var onKeyEnteredRegistration = geoQuery.on('key_entered', function(
+      key,
+      location,
+      distance
+    ) {
+      console.log(
+        key +
+          ' entered query at ' +
+          location +
+          ' (' +
+          distance +
+          ' km from center)'
+      );
+    });
   };
+
   _onRegionChange = region => {
     this.setState({
       latitude: region.latitude,
