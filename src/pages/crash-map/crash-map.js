@@ -1,6 +1,6 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-
+import React from 'react';
+import { Text, View } from 'react-native';
+import { styles } from './crash-map-style';
 export default class CrashMap extends React.Component {
   render() {
     return (
@@ -10,12 +10,3 @@ export default class CrashMap extends React.Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
-  }
-});
