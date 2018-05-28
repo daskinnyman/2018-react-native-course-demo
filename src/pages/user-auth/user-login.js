@@ -17,16 +17,13 @@ export default class UserLogin extends React.Component {
       const response = await fetch(
         `https://graph.facebook.com/me?access_token=${token}`
       );
-      // Alert.alert(
-      //     'Logged in!',
-      //     `Hi ${(await response.json()).name}!`,
-      // );
       const credential = firebase.auth.FacebookAuthProvider.credential(token);
       //利用credential登入firebase
       firebase
         .auth()
         .signInAndRetrieveDataWithCredential(credential)
         .then(res => {
+          //登入成功的邏輯
           console.log(res);
           console.log(123);
         })
