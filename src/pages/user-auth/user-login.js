@@ -48,9 +48,8 @@ export default class UserLogin extends React.Component {
                 .database()
                 .ref(`users/${user.uid}`)
                 .once('value')
-                .then(res => {
-                  let user = res.val();
-                  this.props.navigation.navigate('Main',{user});
+                .then(()=> {
+                  this.props.navigation.navigate('Main');
                 });
             })
             .catch(err => {

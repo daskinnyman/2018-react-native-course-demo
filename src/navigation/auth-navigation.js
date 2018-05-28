@@ -29,7 +29,7 @@ export const AppRouter = createStackNavigator(
     }
   },
   {
-    initialRouteName: 'Main',
+    initialRouteName: 'Auth',
     headerMode: 'none',
     navigationOptions: { gesturesEnabled: false }
   }
