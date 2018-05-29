@@ -56,6 +56,7 @@ export default class CrashMap extends React.Component {
         let YLR_CORD = el.YLR_CORD; //Y軸右邊的LOWER Bound
         let XUL_CORD = el.XUL_CORD; //X軸右邊的LOWER Bound
         let YUL_CORD = el.YUL_CORD; //Y軸右邊的LOWER Bound
+        let MREASON = el.MREASON;
         console.log(`456`);
         console.log(twd97tolatlng(XLR_CORD, YLR_CORD,YUL_CORD,XUL_CORD));
         console.log(`123`);
