@@ -1,4 +1,4 @@
-//撞車的圖表頁面//撞車地圖的細節頁面
+//近7日撞車的圖表頁面
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
 import { styles } from './crash-map-style';

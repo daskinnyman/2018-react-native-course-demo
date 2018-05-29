@@ -78,17 +78,16 @@ export default class CrashMap extends React.Component {
       result.map(el => {
         const { XLR_CORD, YLR_CORD, MREASON } = el;
         LR = twd97tolatlng(XLR_CORD, YLR_CORD);
-        let placeInfo = { latitude: LR.lat, longitude: LR.lng, MREASON };
+        let placeInfo = {
+          latitude: LR.lat,
+          longitude: LR.lng,
+          MREASON
+        };
         placeInfos.push(placeInfo);
       });
       let d = new Date().toLocaleDateString();
-      console.log(`cuurent date`);
-      console.log(d);
       this.fbRef.child(`crashlog/${d}`).update({ ...placeInfos });
-
-      this.setState({ placeInfos }, () => {
-        console.log(this.state.placeInfos);
-      });
+      this.setState({ placeInfos });
     } catch (err) {
       console.log(err);
     }
@@ -105,16 +104,6 @@ export default class CrashMap extends React.Component {
     }
 
     let location = await Location.getCurrentPositionAsync({});
-    this.geoFire
-      .set('some_key', [location.coords.latitude, location.coords.longitude])
-      .then(
-        function() {
-          console.log('Provided key has been added to GeoFire');
-        },
-        function(error) {
-          console.log('Error: ' + error);
-        }
-      );
     this.setState({
       latitude: location.coords.latitude,
       longitude: location.coords.longitude
@@ -200,6 +189,7 @@ export default class CrashMap extends React.Component {
         return (
           <MapView.Marker
             key={idx}
+            description={el.MREASON}
             coordinate={{ latitude: el.latitude, longitude: el.longitude }}
           />
         );
