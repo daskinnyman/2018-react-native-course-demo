@@ -2,6 +2,7 @@
   "main": "node_modules/expo/AppEntry.js",
   "private": true,
   "dependencies": {
+    "axios": "^0.18.0",
     "expo": "^27.0.1",
     "firebase": "5.0.4",
     "geofire": "^4.1.2",

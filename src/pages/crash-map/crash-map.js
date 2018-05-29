@@ -5,7 +5,8 @@ import { Constants, Location, Permissions, MapView } from 'expo';
 import { styles } from './crash-map-style';
 import * as firebase from 'firebase';
 import GeoFire from 'geofire';
-
+import axios from 'axios';
+import twd97tolatlng from 'twd97-to-latlng';
 export default class CrashMap extends React.Component {
   constructor(props) {
     super(props);
@@ -33,11 +34,39 @@ export default class CrashMap extends React.Component {
     await this._getGeolocation();
     //監看使用者位置
     await this._watchGeolocation();
+
+    await this._getCrashArea();
   }
   /**
    * 取得撞車的地區
    */
-  _getCrashArea = async () => {};
+  _getCrashArea = async () => {
+    const API_URL = `http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=1262b7ec-ab34-4b71-83fb-c7ee75880f3f`;
+    try {
+      const res = await axios(API_URL, {
+        method: 'get',
+        headers: {
+          'Content-type': 'application/json'
+        }
+      });
+      let length = res.data.result.results.length;
+      let result = res.data.result.results;
+      result.map(el => {
+        let XLR_CORD = el.XLR_CORD; //X軸右邊的LOWER Bound
+        let YLR_CORD = el.YLR_CORD; //Y軸右邊的LOWER Bound
+        let XUL_CORD = el.XUL_CORD; //X軸右邊的LOWER Bound
+        let YUL_CORD = el.YUL_CORD; //Y軸右邊的LOWER Bound
+        console.log(`456`);
+        console.log(twd97tolatlng(XLR_CORD, YLR_CORD,YUL_CORD,XUL_CORD));
+        console.log(`123`);
+        console.log(twd97tolatlng(YUL_CORD, XUL_CORD));
+      });
+      console.log(length);
+      console.log(result);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   /**
    * 取得geolocation
    */
