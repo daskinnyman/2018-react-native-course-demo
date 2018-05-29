@@ -20,7 +20,8 @@ export default class CrashMap extends React.Component {
       Success: null,
       isLoading: false,
       Error: null,
-      result: [],
+      results: [],
+      placeInfos: [],
       latitude: 37.78825,
       longitude: -122.4324,
       latitudeDelta: 0.0922,
@@ -51,19 +52,23 @@ export default class CrashMap extends React.Component {
       });
       let length = res.data.result.results.length;
       let result = res.data.result.results;
+      let placeInfos = [];
       result.map(el => {
-        let XLR_CORD = el.XLR_CORD; //X軸右邊的LOWER Bound
-        let YLR_CORD = el.YLR_CORD; //Y軸右邊的LOWER Bound
-        let XUL_CORD = el.XUL_CORD; //X軸右邊的LOWER Bound
-        let YUL_CORD = el.YUL_CORD; //Y軸右邊的LOWER Bound
-        let MREASON = el.MREASON;
-        console.log(`456`);
-        console.log(twd97tolatlng(XLR_CORD, YLR_CORD,YUL_CORD,XUL_CORD));
-        console.log(`123`);
-        console.log(twd97tolatlng(YUL_CORD, XUL_CORD));
+        const { XLR_CORD, YLR_CORD, XUL_CORD, YUL_CORD, MREASON } = el;
+        LR = twd97tolatlng(XLR_CORD, YLR_CORD);
+        UL = twd97tolatlng(XUL_CORD, YUL_CORD);
+        let placeInfo = {
+          XLR: LR.lat,
+          YLR: LR.lng,
+          XUL: UL.lat,
+          YUL: UL.lng,
+          MREASON
+        };
+        placeInfos.push(placeInfo);
       });
-      console.log(length);
-      console.log(result);
+      this.setState({ placeInfos }, () => {
+        console.log(this.state.placeInfos);
+      });
     } catch (err) {
       console.log(err);
     }
@@ -109,7 +114,10 @@ export default class CrashMap extends React.Component {
     }
 
     Location.watchPositionAsync(
-      { enableHighAccuracy: true, distanceInterval: 20 },
+      {
+        enableHighAccuracy: true,
+        distanceInterval: 20
+      },
       location => {
         this._getNearbyUser(
           location.coords.latitude,
@@ -129,7 +137,10 @@ export default class CrashMap extends React.Component {
    */
   _getNearbyUser = async (lat, lng) => {
     let center = [lat, lng];
-    let geoQuery = this.geoFire.query({ center, radius: 10 });
+    let geoQuery = this.geoFire.query({
+      center,
+      radius: 10
+    });
     geoQuery.on('key_entered', (key, location, distance) => {
       console.log(
         key +
@@ -142,7 +153,7 @@ export default class CrashMap extends React.Component {
     });
   };
 
-  _onRegionChange = region => {
+  _onRegionChangeComplete = region => {
     this.setState({
       latitude: region.latitude,
       longitude: region.longitude,
@@ -164,7 +175,7 @@ export default class CrashMap extends React.Component {
           loadingEnabled
           style={styles.map}
           showsUserLocation={true}
-          onRegionChange={this._onRegionChange}
+          onRegionChangeComplete={this._onRegionChangeComplete}
           region={{
             latitude: this.state.latitude,
             longitude: this.state.longitude,
