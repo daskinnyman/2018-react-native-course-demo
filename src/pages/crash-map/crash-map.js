@@ -1,6 +1,6 @@
 //顯示撞車的地圖頁面
 import React from 'react';
-import { Text, View, Dimensions } from 'react-native';
+import { Text, View, Dimensions, Button } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import { styles } from './crash-map-style';
 import * as firebase from 'firebase';
@@ -166,7 +166,13 @@ export default class CrashMap extends React.Component {
    * @memberof CrashID事件的ID
    * @param crashID：撞車
    */
-  _goNext = crashID => {};
+  _handelNav = (pageName, params = null) => {
+    console.log(pageName);
+    if (params) {
+      this.props.navigation.navigate(pageName, params);
+    }
+    this.props.navigation.navigate(pageName);
+  };
 
   render() {
     return (
@@ -183,6 +189,7 @@ export default class CrashMap extends React.Component {
             longitudeDelta: this.state.longitudeDelta
           }}
         />
+        <Button title="看圖表" onPress={() => this._handelNav('Chart')} />
       </View>
     );
   }
