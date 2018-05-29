@@ -9,13 +9,11 @@ class PostCrashInput extends Component {
   constructor(props) {
     super(props);
     this.fbRef = firebase.database().ref();
-    this.geoRef = this.fbRef.child('_GEOFIRE');
-    this.geoFire = new GeoFire(this.geoRef);
-  
     this.state = {
-      url: this.props.navigation.state.params.url,
+      photo: this.props.navigation.state.params.url,
       latitude: null,
-      longitude: null
+      longitude: null,
+      MREASON: '啊就撞車'
     };
   }
 
@@ -39,16 +37,12 @@ class PostCrashInput extends Component {
 
   _handlePost = () => {
     console.log(this.state);
-    this.geoFire
-      .set('some_key', [this.state.latitude, this.state.longitude])
-      .then(
-        function() {
-          console.log('Provided key has been added to GeoFire');
-        },
-        function(error) {
-          console.log('Error: ' + error);
-        }
-      );
+    let d = new Date().toLocaleDateString();
+    this.fbRef.child(`posts/${d}`).set(this.state);
+  };
+
+  _handleChange = (text) => {
+    console.log(text);
   };
 
   render() {
@@ -56,8 +50,9 @@ class PostCrashInput extends Component {
       <View>
         <Image
           style={{ width: 365, height: 200 }}
-          source={{ uri: this.state.url }}
+          source={{ uri: this.state.photo }}
         />
+        <TextInput onChange={this._handleChange} />
         <Button title="發文" onPress={this._handlePost} />
       </View>
     );

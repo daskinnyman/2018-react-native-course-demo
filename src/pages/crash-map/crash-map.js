@@ -45,7 +45,7 @@ export default class CrashMap extends React.Component {
   _getCrashArea = async () => {
     let d = new Date().toLocaleDateString();
     this.fbRef
-      .child(`crashlog/${d}`)
+      .child(`crashRank`)
       .once('value')
       .then(snapshot => {
         if (snapshot.val()) {
@@ -86,7 +86,7 @@ export default class CrashMap extends React.Component {
         placeInfos.push(placeInfo);
       });
       let d = new Date().toLocaleDateString();
-      this.fbRef.child(`crashlog/${d}`).update({ ...placeInfos });
+      this.fbRef.child(`crashRank`).update({ ...placeInfos });
       this.setState({ placeInfos });
     } catch (err) {
       console.log(err);

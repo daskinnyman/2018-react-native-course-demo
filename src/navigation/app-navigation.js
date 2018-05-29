@@ -1,5 +1,5 @@
 import React from 'react';
-import { createBottomTabNavigator, DrawerItems } from 'react-navigation';
+import { createDrawerNavigator, DrawerItems } from 'react-navigation';
 import { Button, View, Keyboard, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { MapStack } from '../pages/crash-map';
@@ -8,7 +8,7 @@ import { ProfileStack } from '../pages/user-profile/index';
 
 //在react-navigation 2.0版，
 //DrawerNavigator改為createDrawerNavigator
-export const BottomTabNavigator = createBottomTabNavigator(
+export const DrawerNavigator = createDrawerNavigator(
   {
     Home: {
       screen: MapStack,
