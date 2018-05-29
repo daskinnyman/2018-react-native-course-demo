@@ -7,6 +7,7 @@ import firebase from 'firebase';
 class PostCrashCamera extends Component {
   constructor(props) {
     super(props);
+    this.user = firebase.auth().currentUser;
     this.storageRef = firebase.storage().ref();
   }
   state = {
@@ -45,6 +46,7 @@ class PostCrashCamera extends Component {
   };
 
   render() {
+    console.log(this.user);
     const { hasCameraPermission } = this.state;
     if (hasCameraPermission === null) {
       return <View />;

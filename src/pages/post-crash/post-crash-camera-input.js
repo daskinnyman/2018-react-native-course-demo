@@ -11,7 +11,7 @@ class PostCrashInput extends Component {
     this.fbRef = firebase.database().ref();
     this.geoRef = this.fbRef.child('_GEOFIRE');
     this.geoFire = new GeoFire(this.geoRef);
-    this.user = firebase.auth().currentUser;
+  
     this.state = {
       url: this.props.navigation.state.params.url,
       latitude: null,
