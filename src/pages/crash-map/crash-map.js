@@ -23,6 +23,7 @@ export default class CrashMap extends React.Component {
       Success: null,
       isLoading: false,
       Error: null,
+      showCircle: false,
       results: [],
       placeInfos: [],
       latitude: 37.78825,
@@ -234,12 +235,13 @@ export default class CrashMap extends React.Component {
             longitudeDelta: this.state.longitudeDelta
           }}
         >
-          {this._renderMarkers()}
+          {this.state.showCircle ? this._renderCircle() : this._renderMarkers()}
         </MapView>
         <Button
-          title="查看撞車熱點"
+          title={this.state.showCircle?"查看附近車禍":"查看撞車熱點"}
           raised
           color="#4A4A4A"
+          onPress={()=>this.setState({showCircle:!this.state.showCircle})}
           borderRadius={55}
           fontSize={12}
           fontWeight="bold"
