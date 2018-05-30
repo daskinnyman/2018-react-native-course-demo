@@ -54,8 +54,11 @@ class PostCrashInput extends Component {
   _handlePost = () => {
     console.log(this.state);
     let d = new Date().toLocaleDateString();
-    this.fbRef.child(`posts/${d}`).set(this.state);
-    this.geoFire.set('123', [this.state.latitude, this.state.longitude]).then(function () {
+    let geofireIdx = d.replace(/\//g,'-');
+    //以日期儲存方便繪製圖表
+    let key = this.fbRef.child(`posts/${d}`).push(this.state).key;
+    //提供goefire作為索引
+      this.geoFire.set(`${geofireIdx}|${key}`, [this.state.latitude, this.state.longitude]).then(function () {
       console.log("Provided keys have been added to GeoFire");
     }, function (error) {
       console.log("Error: " + error);

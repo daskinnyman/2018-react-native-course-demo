@@ -41,11 +41,9 @@ export default class CrashMap extends React.Component {
 
     await this._getCrashArea();
 
-    this.fbRef
-      .child(`posts`)
-      .on(`value`, (snapshot => {
-        console.log(snapshot.val());
-      }));
+    this.fbRef.child(`posts`).on(`value`, snapshot => {
+      console.log(snapshot.val());
+    });
   }
 
   /**
@@ -155,19 +153,23 @@ export default class CrashMap extends React.Component {
    */
   _getNearbyUser = async (lat, lng) => {
     let center = [lat, lng];
+    let nearbyUsers = [...this.state.results];
     let geoQuery = this.geoFire.query({
       center,
       radius: 10
     });
     geoQuery.on('key_entered', (key, location, distance) => {
-      console.log(
-        key +
-          ' entered query at ' +
-          location +
-          ' (' +
-          distance +
-          ' km from center)'
-      );
+      let date = key.split('|')[0];
+      let postId = key.split('|')[1];
+      let d = date.replace(/-/g, '/');
+
+      this.fbRef
+        .child(`posts/${d}/${postId}`)
+        .once('value')
+        .then(snapshot => {
+          nearbyUsers.push(snapshot.val());
+          this.setState({ results: nearbyUsers });
+        });
     });
   };
 
@@ -190,9 +192,23 @@ export default class CrashMap extends React.Component {
     }
     this.props.navigation.navigate(pageName);
   };
-  _renderMarker = () => {
+  _renderCircle = () => {
     if (this.state.placeInfos) {
       return this.state.placeInfos.map((el, idx) => {
+        return (
+          <MapView.Marker
+            key={idx}
+            description={el.MREASON}
+            coordinate={{ latitude: el.latitude, longitude: el.longitude }}
+          />
+        );
+      });
+    }
+  };
+
+  _renderMarkers = () => {
+    if (this.state.results) {
+      return this.state.results.map((el, idx) => {
         return (
           <MapView.Marker
             key={idx}
@@ -218,7 +234,7 @@ export default class CrashMap extends React.Component {
             longitudeDelta: this.state.longitudeDelta
           }}
         >
-          {this._renderMarker()}
+          {this._renderMarkers()}
         </MapView>
         <Button
           title="查看撞車熱點"
