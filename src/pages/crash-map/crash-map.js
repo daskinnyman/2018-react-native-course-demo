@@ -141,7 +141,7 @@ export default class CrashMap extends React.Component {
           location.coords.longitude
         );
         this.setState({
-          current_lat: location.coords.latitud,
+          current_lat: location.coords.latitude,
           current_lng: location.coords.longitude
         });
       }
@@ -193,6 +193,12 @@ export default class CrashMap extends React.Component {
     }
     this.props.navigation.navigate(pageName);
   };
+  _handelResetRegion=()=>{
+    this.setState({
+      latitude: this.state.current_lat,
+      longitude: this.state.current_lng,
+    });
+  }
   _renderCircle = () => {
     if (this.state.placeInfos) {
       return this.state.placeInfos.map((el, idx) => {
@@ -284,7 +290,7 @@ export default class CrashMap extends React.Component {
             name="ios-pin"
             color="#FFD05B"
             raised
-            onPress={() => this._handelNav('Chart')}
+            onPress={this._handelResetRegion}
           />
         </View>
       </View>
