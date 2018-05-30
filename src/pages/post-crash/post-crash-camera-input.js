@@ -6,7 +6,9 @@ import {
   Image,
   Button,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
+  AsyncStorage,
+  KeyboardAvoidingView
 } from 'react-native';
 import { Constants, Location, Permissions } from 'expo';
 import firebase from 'firebase';
@@ -29,13 +31,28 @@ class PostCrashInput extends Component {
       photo: this.props.navigation.state.params.url,
       latitude: null,
       longitude: null,
-      MREASON: '啊就撞車'
+      MREASON: '啊就撞車',
+      place: null,
+      postBy:null
     };
   }
 
   async componentDidMount() {
     await this._getGeolocation();
+    await this._getUserProfile();
   }
+
+  _getUserProfile = async () => {
+    try {
+      const uid = await AsyncStorage.getItem('@user:key');
+      if (uid !== null) {
+        // We have data!!
+        this.fbRef.child(`users/${uid}`).once('value').then(snapshot=>{
+          this.setState({name:snapshot.val().name})
+        })
+      }
+    } catch (err) {}
+  };
 
   _getGeolocation = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -45,33 +62,48 @@ class PostCrashInput extends Component {
       });
     }
     let location = await Location.getCurrentPositionAsync({});
-    this.setState({
+    let place = await Expo.Location.reverseGeocodeAsync({
       latitude: location.coords.latitude,
       longitude: location.coords.longitude
+    });
+    console.log(place);
+    this.setState({
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+      place: place[0].name
     });
   };
 
   _handlePost = () => {
     console.log(this.state);
     let d = new Date().toLocaleDateString();
-    let geofireIdx = d.replace(/\//g,'-');
+    let geofireIdx = d.replace(/\//g, '-');
     //以日期儲存方便繪製圖表
     let key = this.fbRef.child(`posts/${d}`).push(this.state).key;
-    //提供goefire作為索引
-      this.geoFire.set(`${geofireIdx}|${key}`, [this.state.latitude, this.state.longitude]).then(function () {
-      console.log("Provided keys have been added to GeoFire");
-    }, function (error) {
-      console.log("Error: " + error);
-    })
-  }
+    //提供geofire作為索引
+    this.geoFire
+      .set(`${geofireIdx}|${key}`, [this.state.latitude, this.state.longitude])
+      .then(
+        ()=>{
+          this.props.navigation.navigate('Home');
+        },
+        (error)=>{
+          console.log('Error: ' + error);
+        }
+      );
+  };
 
   _handleChange = text => {
-    console.log(text);
+    this.setState({ MREASON: text });
   };
 
   render() {
     return (
-      <View style={{ flex: 1, backgroundColor: 'white' }}>
+      <KeyboardAvoidingView
+        style={{ flex: 1, backgroundColor: 'white' }}
+        behavior="padding"
+        enabled
+      >
         <View style={{ padding: 12 }}>
           <Image
             style={{ width: width - 24, height: width - 24, borderRadius: 4 }}
@@ -79,11 +111,16 @@ class PostCrashInput extends Component {
           />
         </View>
         <FormLabel>位置</FormLabel>
-        <FormInput onChangeText={this._handleChange} />
-        <FormValidationMessage>Error message</FormValidationMessage>
+        <FormInput
+          value={this.state.place || `正在抓取位置`}
+          editable={false}
+          onChangeText={this._handleChange}
+        />
         <FormLabel>描述</FormLabel>
-        <FormInput onChangeText={this._handleChange} />
-        <FormValidationMessage>Error message</FormValidationMessage>
+        <FormInput
+          placeholder={this.state.MREASON}
+          onChangeText={this._handleChange}
+        />
         <View
           style={{
             flex: 1,
@@ -119,7 +156,7 @@ class PostCrashInput extends Component {
             />
           </TouchableOpacity>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }

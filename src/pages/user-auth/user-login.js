@@ -1,6 +1,7 @@
 //使用者登入頁面
 import React from 'react';
-import { Text, View, Alert, Button } from 'react-native';
+import { Text, View, Alert, AsyncStorage } from 'react-native';
+import { Button } from 'react-native-elements';
 import firebase from 'firebase';
 import { styles } from './user-login-style';
 export default class UserLogin extends React.Component {
@@ -28,9 +29,14 @@ export default class UserLogin extends React.Component {
           firebase
             .auth()
             .signInAndRetrieveDataWithCredential(credential)
-            .then(res => {
+            .then(async res => {
               //登入成功的邏輯
               const { user, additionalUserInfo } = res;
+              try {
+                await AsyncStorage.setItem('@user:key', user.uid);
+              } catch (error) {
+                // Error saving data
+              }
               let userData = {
                 name: user.displayName,
                 uid: user.uid,
@@ -64,7 +70,12 @@ export default class UserLogin extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Button title="fb login" onPress={this._logIn} />
+        <Button
+          large
+          icon={{ name: 'logo-facebook', type: 'ionicon' }}
+          title='使用臉書登入'
+          onPress={this._logIn}  
+        />
       </View>
     );
   }
