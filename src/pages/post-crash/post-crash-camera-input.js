@@ -23,6 +23,8 @@ class PostCrashInput extends Component {
   constructor(props) {
     super(props);
     this.fbRef = firebase.database().ref();
+    this.geoRef = this.fbRef.child('_GEOFIRE');
+    this.geoFire = new GeoFire(this.geoRef);
     this.state = {
       photo: this.props.navigation.state.params.url,
       latitude: null,
@@ -53,7 +55,12 @@ class PostCrashInput extends Component {
     console.log(this.state);
     let d = new Date().toLocaleDateString();
     this.fbRef.child(`posts/${d}`).set(this.state);
-  };
+    this.geoFire.set('123', [this.state.latitude, this.state.longitude]).then(function () {
+      console.log("Provided keys have been added to GeoFire");
+    }, function (error) {
+      console.log("Error: " + error);
+    })
+  }
 
   _handleChange = text => {
     console.log(text);

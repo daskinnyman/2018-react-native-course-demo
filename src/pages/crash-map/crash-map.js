@@ -40,6 +40,12 @@ export default class CrashMap extends React.Component {
     await this._watchGeolocation();
 
     await this._getCrashArea();
+
+    this.fbRef
+      .child(`posts`)
+      .on(`value`, (snapshot => {
+        console.log(snapshot.val());
+      }));
   }
 
   /**
@@ -179,7 +185,6 @@ export default class CrashMap extends React.Component {
    * @param crashID：撞車
    */
   _handelNav = (pageName, params = null) => {
-    console.log(pageName);
     if (params) {
       this.props.navigation.navigate(pageName, params);
     }
@@ -187,7 +192,6 @@ export default class CrashMap extends React.Component {
   };
   _renderMarker = () => {
     if (this.state.placeInfos) {
-      console.log(this.state.placeInfos);
       return this.state.placeInfos.map((el, idx) => {
         return (
           <MapView.Marker
