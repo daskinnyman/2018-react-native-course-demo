@@ -37,9 +37,9 @@ class PostCrashInput extends Component {
     };
   }
 
-  async componentDidMount() {
-    await this._getGeolocation();
-    await this._getUserProfile();
+  componentDidMount() {
+    this._getGeolocation();
+    this._getUserProfile();
   }
 
   _getUserProfile = async () => {
