@@ -181,7 +181,7 @@ export default class CrashMap extends React.Component {
   };
 
   _handleMarkerPress=(el)=>{
-    console.log(el);
+    this.props.navigation.navigate('Detail',{data:el});
   }
   /**
    * 處理導頁，傳送user及選取的資料

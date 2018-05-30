@@ -54,7 +54,12 @@ export const MapStack = createStackNavigator({
   Detail: {
     screen: CrashDetail,
     navigationOptions: ({ navigation }) => ({
-      drawerLockMode: 'locked-closed',
+      header: props => <GradientHeader {...props} />,
+      headerStyle: {
+        backgroundColor: 'white',
+        borderBottomWidth: 0,
+        padding: 12
+      },
       headerBackTitle: null,
       headerLeft: (
         <Icon
