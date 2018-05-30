@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 import { Camera, Permissions } from 'expo';
 import firebase from 'firebase';
-
+import { Icon } from 'react-native-elements';
 class PostCrashCamera extends Component {
   constructor(props) {
     super(props);
@@ -54,7 +54,7 @@ class PostCrashCamera extends Component {
       return <Text>No access to camera</Text>;
     } else {
       return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, marginTop: -49 }}>
           <Camera
             style={{ flex: 1 }}
             type={this.state.type}
@@ -66,55 +66,52 @@ class PostCrashCamera extends Component {
               style={{
                 flex: 1,
                 backgroundColor: 'transparent',
-                flexDirection: 'row'
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'flex-end'
               }}
             >
               <TouchableOpacity
-                style={{
-                  flex: 0.1,
-                  alignSelf: 'flex-end',
-                  alignItems: 'center'
-                }}
-                onPress={() => {
-                  this.setState({
-                    type:
-                      this.state.type === Camera.Constants.Type.back
-                        ? Camera.Constants.Type.front
-                        : Camera.Constants.Type.back
-                  });
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 18,
-                    marginBottom: 10,
-                    color: 'white'
-                  }}
-                >
-                  {' '}
-                  Flip{' '}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
+                style={
                   {
-                    flex: 0.3,
-                    alignSelf: 'flex-end'
-                  }
-                ]}
+                    height: 80,
+                    width: 80,
+                    margin: 12,
+                    borderRadius: 80,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: '#FFD05B',
+                    shadowColor: '#000000',
+                    shadowOpacity: 0.5,
+                    shadowOffset: { widht: 0, height: 2 },
+                    shadowRadius: 4
+                  } //maybe is for ios only
+                }
                 onPress={this._handleTakePicture}
               >
-                <Text
-                  style={{
-                    fontSize: 18,
-                    marginBottom: 10,
-                    color: 'white'
-                  }}
-                >
-                  {' '}
-                  SNAP{' '}
-                </Text>
+                <Icon
+                  type="ionicon"
+                  size={35}
+                  style={{ color: '#4A4A4A' }}
+                  name="ios-camera-outline"
+                />
               </TouchableOpacity>
+              <View style={{ position: 'absolute', right: 12, bottom: 12 }}>
+                <Icon
+                  type="ionicon"
+                  name="ios-reverse-camera"
+                  color="#FFD05B"
+                  raised
+                  onPress={() => {
+                    this.setState({
+                      type:
+                        this.state.type === Camera.Constants.Type.back
+                          ? Camera.Constants.Type.front
+                          : Camera.Constants.Type.back
+                    });
+                  }}
+                />
+              </View>
             </View>
           </Camera>
         </View>

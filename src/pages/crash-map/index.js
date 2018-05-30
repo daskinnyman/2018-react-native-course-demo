@@ -37,13 +37,15 @@ export const MapStack = createStackNavigator({
       header: props => <GradientHeader {...props} />,
       headerStyle: {
         backgroundColor: 'rgba(0,0,0,0)',
-        borderBottomWidth:0
+        borderBottomWidth:0,
+        padding:12
       },
       headerBackTitle: null,
       headerLeft: (
         <Icon
           type="ionicon"
           name="ios-menu"
+          size={30}
           onPress={() => navigation.openDrawer()}
         />
       )

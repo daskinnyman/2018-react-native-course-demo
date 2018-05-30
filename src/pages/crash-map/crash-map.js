@@ -41,6 +41,7 @@ export default class CrashMap extends React.Component {
 
     await this._getCrashArea();
   }
+
   /**
    * 取得撞車的地區
    */
@@ -232,18 +233,18 @@ export default class CrashMap extends React.Component {
             borderRadius: 80,
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: '#FFD05B',
-            //maybe is for ios only
-            shadowColor:'#000000',
+            backgroundColor: '#FFD05B', //maybe is for ios only
+            shadowColor: '#000000',
             shadowOpacity: 0.5,
-            shadowOffset:{widht:0,height:2},
-            shadowRadius:4
+            shadowOffset: { widht: 0, height: 2 },
+            shadowRadius: 4
           }}
           onPress={() => this._handelNav('Post')}
         >
           <Icon
             type="ionicon"
-            style={{ color: '#4A4A4A', fontSize: 24 }}
+            size={35}
+            style={{ color: '#4A4A4A' }}
             name="ios-camera-outline"
           />
           <Text style={{ color: '#4A4A4A', fontSize: 9 }}>發文</Text>
