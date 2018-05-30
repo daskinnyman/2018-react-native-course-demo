@@ -12,46 +12,27 @@ export const PostStack = createStackNavigator(
       screen: PostCrashCameraPage,
       navigationOptions: ({ navigation }) => ({
         drawerLockMode: 'locked-closed',
-        headerStyle: {
-          backgroundColor: '#67C2AC',
-          paddingTop: 32,
-          paddingHorizontal: 16,
-          paddingBottom: 16,
-          shadowOpacity: 0,
-          borderBottomWidth: 0
-        },
-        headerTitle: '',
-        headerTitleStyle: {
-          color: 'white',
-          fontSize: 14,
-          lineHeight: 22,
-          letterSpacing: 0.22
-        }
+        headerBackTitle: null,
+        headerLeft: (
+          <Button
+            title="回上頁"
+            onPress={() => navigation.navigate('Home')}
+          />
+        )
       })
     },
     PostInput: {
       screen: PostCrashInputPage,
       navigationOptions: ({ navigation }) => ({
         drawerLockMode: 'locked-closed',
-        headerStyle: {
-          backgroundColor: '#67C2AC',
-          paddingTop: 32,
-          paddingHorizontal: 16,
-          paddingBottom: 16,
-          shadowOpacity: 0,
-          borderBottomWidth: 0
-        },
-        headerTitle: '',
-        headerTitleStyle: {
-          color: 'white',
-          fontSize: 14,
-          lineHeight: 22,
-          letterSpacing: 0.22
-        }
+        headerBackTitle: null,
+        headerLeft: (
+          <Button
+            title="回上頁"
+            onPress={() => navigation.goBack(null)}
+          />
+        )
       })
     }
-  },
-  {
-    headerMode: 'none'
   }
 );

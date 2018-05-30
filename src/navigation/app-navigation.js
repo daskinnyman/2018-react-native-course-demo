@@ -12,7 +12,6 @@ export const DrawerNavigator = createDrawerNavigator(
   {
     Home: {
       screen: MapStack,
-      tintColor: '#67C2AC'
     },
     Post: {
       screen: PostStack,

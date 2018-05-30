@@ -1,65 +1,80 @@
 import React from 'react';
-import { createStackNavigator } from 'react-navigation';
-import { Button, Keyboard, Image, TouchableOpacity } from 'react-native';
-
+import { createStackNavigator, Header } from 'react-navigation';
+import { LinearGradient } from 'expo';
+import {
+  Button,
+  View,
+  Keyboard,
+  Image,
+  TouchableOpacity,
+  StyleSheet
+} from 'react-native';
+import { Icon } from 'react-native-elements';
 import CrashMapPage from './crash-map';
 import CrashDetail from './crash-map-detail';
 import CrashChartPage from './crash-chart';
 
+const GradientHeader = props => (
+  <View>
+    <LinearGradient
+      colors={[
+        'rgba(255,255,255,1)',
+        'rgba(255,255,255,79)',
+        'rgba(255,255,255,0)'
+      ]}
+      style={[StyleSheet.absoluteFill]}
+    />
+    <Header {...props} style={{ backgroundColor: 'transparent' }} />
+  </View>
+);
+
 //在react-navigation 2.0版，
 //StackNavigator改為createStackNavigator
-export const MapStack = createStackNavigator(
-  {
-    Map: {
-      screen: CrashMapPage,
-      navigationOptions: ({ navigation }) => ({
-        title: 'Profile',
-      })
-    },
-    Detail: {
-      screen: CrashDetail,
-      navigationOptions: ({ navigation }) => ({
-        drawerLockMode: 'locked-closed',
-        headerStyle: {
-          backgroundColor: '#67C2AC',
-          paddingTop: 32,
-          paddingHorizontal: 16,
-          paddingBottom: 16,
-          shadowOpacity: 0,
-          borderBottomWidth: 0
-        },
-        headerTitle: '',
-        headerTitleStyle: {
-          color: 'white',
-          fontSize: 14,
-          lineHeight: 22,
-          letterSpacing: 0.22
-        }
-      })
-    },
-    Chart: {
-      screen: CrashChartPage,
-      navigationOptions: ({ navigation }) => ({
-        drawerLockMode: 'locked-closed',
-        headerStyle: {
-          backgroundColor: '#67C2AC',
-          paddingTop: 32,
-          paddingHorizontal: 16,
-          paddingBottom: 16,
-          shadowOpacity: 0,
-          borderBottomWidth: 0
-        },
-        headerTitle: '',
-        headerTitleStyle: {
-          color: 'white',
-          fontSize: 14,
-          lineHeight: 22,
-          letterSpacing: 0.22
-        }
-      })
-    }
+export const MapStack = createStackNavigator({
+  Map: {
+    screen: CrashMapPage,
+    navigationOptions: ({ navigation }) => ({
+      header: props => <GradientHeader {...props} />,
+      headerStyle: {
+        backgroundColor: 'rgba(0,0,0,0)',
+        borderBottomWidth:0
+      },
+      headerBackTitle: null,
+      headerLeft: (
+        <Icon
+          type="ionicon"
+          name="ios-menu"
+          onPress={() => navigation.openDrawer()}
+        />
+      )
+    })
   },
-  {
-    headerMode: 'none'
+  Detail: {
+    screen: CrashDetail,
+    navigationOptions: ({ navigation }) => ({
+      drawerLockMode: 'locked-closed',
+      headerBackTitle: null,
+      headerLeft: (
+        <Icon
+          type="ionicon"
+          name="ios-arrow-back"
+          onPress={() => navigation.goBack(null)}
+        />
+      )
+    })
+  },
+  Chart: {
+    screen: CrashChartPage,
+    navigationOptions: ({ navigation }) => ({
+      drawerLockMode: 'locked-closed',
+      headerBackTitle: null,
+      headerLeft: (
+        <Icon
+          type="ionicon"
+          name="ios-arrow-back"
+          onPress={() => navigation.goBack(null)}
+        />
+      )
+    })
   }
-);
+});

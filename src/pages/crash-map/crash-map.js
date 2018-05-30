@@ -1,7 +1,9 @@
 //顯示撞車的地圖頁面
 import React from 'react';
-import { Text, View, Dimensions, Button } from 'react-native';
+import { Text, View, Dimensions, TouchableOpacity } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
+import { Button } from 'react-native-elements';
+import { Icon } from 'react-native-elements';
 import { styles } from './crash-map-style';
 import * as firebase from 'firebase';
 import GeoFire from 'geofire';
@@ -213,7 +215,55 @@ export default class CrashMap extends React.Component {
         >
           {this._renderMarker()}
         </MapView>
-        <Button title="看圖表" onPress={() => this._handelNav('Chart')} />
+        <Button
+          title="查看撞車熱點"
+          raised
+          color="#4A4A4A"
+          borderRadius={55}
+          fontSize={12}
+          fontWeight="bold"
+          buttonStyle={{ width: 110, backgroundColor: 'white' }}
+        />
+        <TouchableOpacity
+          style={{
+            height: 80,
+            width: 80,
+            margin: 12,
+            borderRadius: 80,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#FFD05B',
+            //maybe is for ios only
+            shadowColor:'#000000',
+            shadowOpacity: 0.5,
+            shadowOffset:{widht:0,height:2},
+            shadowRadius:4
+          }}
+          onPress={() => this._handelNav('Post')}
+        >
+          <Icon
+            type="ionicon"
+            style={{ color: '#4A4A4A', fontSize: 24 }}
+            name="ios-camera-outline"
+          />
+          <Text style={{ color: '#4A4A4A', fontSize: 9 }}>發文</Text>
+        </TouchableOpacity>
+        <View style={{ position: 'absolute', right: 12, bottom: 12 }}>
+          <Icon
+            type="ionicon"
+            name="ios-stats"
+            color="#FFD05B"
+            raised
+            onPress={() => this._handelNav('Chart')}
+          />
+          <Icon
+            type="ionicon"
+            name="ios-pin"
+            color="#FFD05B"
+            raised
+            onPress={() => this._handelNav('Chart')}
+          />
+        </View>
       </View>
     );
   }
