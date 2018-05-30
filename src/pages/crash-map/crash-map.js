@@ -1,6 +1,6 @@
 //顯示撞車的地圖頁面
 import React from 'react';
-import { Text, View, Dimensions, TouchableOpacity } from 'react-native';
+import { Text, View, Dimensions, TouchableOpacity ,Image} from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import { Button } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
@@ -42,9 +42,6 @@ export default class CrashMap extends React.Component {
 
     await this._getCrashArea();
 
-    this.fbRef.child(`posts`).on(`value`, snapshot => {
-      console.log(snapshot.val());
-    });
   }
 
   /**
@@ -157,7 +154,7 @@ export default class CrashMap extends React.Component {
     let nearbyUsers = [...this.state.results];
     let geoQuery = this.geoFire.query({
       center,
-      radius: 10
+      radius: 10000
     });
     geoQuery.on('key_entered', (key, location, distance) => {
       let date = key.split('|')[0];
@@ -182,6 +179,10 @@ export default class CrashMap extends React.Component {
       longitudeDelta: region.longitudeDelta
     });
   };
+
+  _handleMarkerPress=(el)=>{
+    console.log(el);
+  }
   /**
    * 處理導頁，傳送user及選取的資料
    * @memberof CrashID事件的ID
@@ -216,13 +217,27 @@ export default class CrashMap extends React.Component {
   _renderMarkers = () => {
     if (this.state.results) {
       return this.state.results.map((el, idx) => {
-        return (
-          <MapView.Marker
-            key={idx}
-            description={el.MREASON}
-            coordinate={{ latitude: el.latitude, longitude: el.longitude }}
-          />
-        );
+        return <MapView.Marker key={idx} onPress={()=>this._handleMarkerPress(el)} description={el.MREASON} coordinate={{ latitude: el.latitude, longitude: el.longitude }} >
+          <View style={{
+      width:50,
+      height:50,
+      borderRadius:25,
+      backgroundColor:'#eee',
+      marginBottom:10
+  }}>
+                 {el.photo?
+                 <Image
+                 style={{
+      width:50,
+      height:50,
+      borderRadius:25,
+      backgroundColor:'#eee',
+      marginBottom:10
+  }}
+                 source={{uri:el.photo}} />:
+                 null}
+                 </View>
+        </MapView.Marker>;
       });
     }
   };
