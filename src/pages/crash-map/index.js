@@ -73,7 +73,12 @@ export const MapStack = createStackNavigator({
   Chart: {
     screen: CrashChartPage,
     navigationOptions: ({ navigation }) => ({
-      drawerLockMode: 'locked-closed',
+      header: props => <GradientHeader {...props} />,
+      headerStyle: {
+        backgroundColor: 'white',
+        borderBottomWidth: 0,
+        padding: 12
+      },
       headerBackTitle: null,
       headerLeft: (
         <Icon

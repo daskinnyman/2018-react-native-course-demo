@@ -33,7 +33,7 @@ class PostCrashInput extends Component {
       longitude: null,
       MREASON: '啊就撞車',
       place: null,
-      postBy:null
+      postBy: null
     };
   }
 
@@ -47,9 +47,12 @@ class PostCrashInput extends Component {
       const uid = await AsyncStorage.getItem('@user:key');
       if (uid !== null) {
         // We have data!!
-        this.fbRef.child(`users/${uid}`).once('value').then(snapshot=>{
-          this.setState({name:snapshot.val().name})
-        })
+        this.fbRef
+          .child(`users/${uid}`)
+          .once('value')
+          .then(snapshot => {
+            this.setState({ name: snapshot.val().name });
+          });
       }
     } catch (err) {}
   };
@@ -84,10 +87,10 @@ class PostCrashInput extends Component {
     this.geoFire
       .set(`${geofireIdx}|${key}`, [this.state.latitude, this.state.longitude])
       .then(
-        ()=>{
+        () => {
           this.props.navigation.navigate('Home');
         },
-        (error)=>{
+        error => {
           console.log('Error: ' + error);
         }
       );
@@ -100,16 +103,14 @@ class PostCrashInput extends Component {
   render() {
     return (
       <KeyboardAvoidingView
-        style={{ flex: 1, backgroundColor: 'white' }}
-        behavior="padding"
+        style={{ flex: 1, backgroundColor: 'white', padding: 12}}
+        behavior="position"
         enabled
       >
-        <View style={{ padding: 12 }}>
-          <Image
-            style={{ width: width - 24, height: width - 24, borderRadius: 4 }}
-            source={{ uri: this.state.photo }}
-          />
-        </View>
+        <Image
+          style={{ width: width - 24, height: width - 24, borderRadius: 4 }}
+          source={{ uri: this.state.photo }}
+        />
         <FormLabel>位置</FormLabel>
         <FormInput
           value={this.state.place || `正在抓取位置`}
@@ -123,11 +124,7 @@ class PostCrashInput extends Component {
         />
         <View
           style={{
-            flex: 1,
-            backgroundColor: 'transparent',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'flex-end'
+            alignItems: 'center'
           }}
         >
           <TouchableOpacity
