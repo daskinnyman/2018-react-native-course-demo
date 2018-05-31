@@ -208,8 +208,8 @@ export default class CrashMap extends React.Component {
             key={idx}
             center={{ latitude: el.latitude, longitude: el.longitude }}
             radius={150}
-            strokeColor={'#EF7B7B'}
-            fillColor={'rgba(239,123,123,0.5)'}
+            strokeColor={'#ffd05b'}
+            fillColor={'rgba(255, 208, 91,0.5)'}
           />
         );
       });
