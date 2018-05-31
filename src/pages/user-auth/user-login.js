@@ -1,7 +1,7 @@
 //使用者登入頁面
 import React from 'react';
 import { Text, View, Alert, AsyncStorage } from 'react-native';
-import { Button } from 'react-native-elements';
+import { SocialIcon } from 'react-native-elements';
 import firebase from 'firebase';
 import { styles } from './user-login-style';
 export default class UserLogin extends React.Component {
@@ -105,12 +105,15 @@ export default class UserLogin extends React.Component {
     return (
       <View style={styles.container}>
         <Text>加入歹霸底底隆，分享你撞車的點點滴滴</Text>
-        {this.state.isAuth===false&&<Button
-          large
-          icon={{ name: 'logo-facebook', type: 'ionicon' }}
-          title="使用臉書登入"
-          onPress={this._logIn}
-        />}
+        {this.state.isAuth === false && (
+          <SocialIcon
+            style={{width:150,marginTop:32}}
+            title='使用臉書登入'
+            onPress={this._logIn}
+            button
+            type='facebook'
+          />
+        )}
       </View>
     );
   }

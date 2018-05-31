@@ -204,10 +204,12 @@ export default class CrashMap extends React.Component {
     if (this.state.placeInfos) {
       return this.state.placeInfos.map((el, idx) => {
         return (
-          <MapView.Marker
+          <MapView.Circle
             key={idx}
-            description={el.MREASON}
-            coordinate={{ latitude: el.latitude, longitude: el.longitude }}
+            center={{ latitude: el.latitude, longitude: el.longitude }}
+            radius={150}
+            strokeColor={'#EF7B7B'}
+            fillColor={'rgba(239,123,123,0.5)'}
           />
         );
       });

@@ -53,8 +53,8 @@ class CrashChart extends Component {
             style={{ data: { fill: '#c43a31' } }}
             data={this.state.datas}
           />
+          <Text>本月車禍統計</Text>
         </VictoryChart>
-        <Text>五月車禍統計</Text>
       </View>
     );
   }
