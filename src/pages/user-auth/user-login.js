@@ -1,6 +1,6 @@
 //使用者登入頁面
 import React from 'react';
-import { Text, View, Alert, AsyncStorage } from 'react-native';
+import { Text, View, Alert, AsyncStorage,Image } from 'react-native';
 import { SocialIcon } from 'react-native-elements';
 import firebase from 'firebase';
 import { styles } from './user-login-style';
@@ -104,7 +104,8 @@ export default class UserLogin extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>加入歹霸底底隆，分享你撞車的點點滴滴</Text>
+        <Image style = {{width:296,height:296}} source={require('../../../assets/intro.png')} />
+        <Text style= {{fontSize:18}}>加入歹霸底底隆，分享你撞車的點點滴滴</Text>
         {this.state.isAuth === false && (
           <SocialIcon
             style={{width:150,marginTop:32}}
