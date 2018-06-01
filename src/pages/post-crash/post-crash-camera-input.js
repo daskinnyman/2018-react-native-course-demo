@@ -121,7 +121,6 @@ class PostCrashInput extends Component {
   };
 
   render() {
-    console.log(this.state.photo);
     return (
       <KeyboardAvoidingView
         style={styles.inputContainer}
