@@ -39,14 +39,14 @@ class CrashChart extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1, backgroundColor: 'white', padding: 12 }}>
+      <View style={{ flex: 1, backgroundColor: 'white', padding: 12 ,alignItems:'center'}}>
         <VictoryChart theme={VictoryTheme.material} domainPadding={10}>
           <VictoryBar
-            style={{ data: { fill: '#c43a31' } }}
+            style={{ data: { fill: '#FFD05B' } }}
             data={this.state.datas}
           />
-          <Text>本月車禍統計</Text>
         </VictoryChart>
+        <Text>本月車禍次數統計</Text>
       </View>
     );
   }
