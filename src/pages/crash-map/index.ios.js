@@ -37,8 +37,9 @@ export const MapStack = createStackNavigator({
       header: props => <GradientHeader {...props} />,
       headerStyle: {
         backgroundColor: 'rgba(0,0,0,0)',
-        borderBottomWidth:0,
-        padding:12
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        padding: 12
       },
       headerBackTitle: null,
       headerLeft: (

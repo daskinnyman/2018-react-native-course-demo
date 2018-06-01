@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   AsyncStorage,
   Alert,
+  ScrollView,
   KeyboardAvoidingView
 } from 'react-native';
 import { Location, Permissions } from 'expo';
@@ -115,32 +116,37 @@ class PostCrashInput extends Component {
 
   render() {
     return (
-      <KeyboardAvoidingView
-        style={styles.inputContainer}
-        behavior="position"
-        enabled
-      >
-        <Image style={styles.previewImage} source={{ uri: this.state.photo }} />
-        <FormLabel>位置</FormLabel>
-        <FormInput
-          value={this.state.place || `正在抓取位置`}
-          editable={false}
-          onChangeText={this._handleChange}
-        />
-        <FormLabel>描述</FormLabel>
-        <FormInput
-          placeholder={this.state.MREASON}
-          onChangeText={this._handleChange}
-        />
-        <View style={styles.postContainer}>
-          <TouchableOpacity
-            style={styles.postButton}
-            onPress={this._handlePost}
-          >
-            <Icon type="ionicon" size={35} color="#4A4A4A" name="ios-add" />
-          </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
+      <ScrollView>
+        <KeyboardAvoidingView
+          style={styles.inputContainer}
+          behavior="position"
+          enabled
+        >
+          <Image
+            style={styles.previewImage}
+            source={{ uri: this.state.photo }}
+          />
+          <FormLabel>位置</FormLabel>
+          <FormInput
+            value={this.state.place || `正在抓取位置`}
+            editable={false}
+            onChangeText={this._handleChange}
+          />
+          <FormLabel>描述</FormLabel>
+          <FormInput
+            placeholder={this.state.MREASON}
+            onChangeText={this._handleChange}
+          />
+          <View style={styles.postContainer}>
+            <TouchableOpacity
+              style={styles.postButton}
+              onPress={this._handlePost}
+            >
+              <Icon type="ionicon" size={35} color="#4A4A4A" name="ios-add" />
+            </TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
+      </ScrollView>
     );
   }
 }
