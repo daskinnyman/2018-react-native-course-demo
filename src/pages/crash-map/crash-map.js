@@ -10,16 +10,17 @@ import {
 } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 
-import * as firebase from 'firebase';
+import firebase from 'firebase';
 import GeoFire from 'geofire';
 import axios from 'axios';
 import twd97tolatlng from 'twd97-to-latlng';
 
 import { Button } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
-import { styles } from './crash-map-style';
 import { MapMarker } from '../../components/carsh-marker/crash-marker';
 import { PostButton } from '../../components/post-button/post-button';
+
+import { styles } from './crash-map-style';
 
 const API_URL = `http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=1262b7ec-ab34-4b71-83fb-c7ee75880f3f`;
 const { Circle } = MapView;

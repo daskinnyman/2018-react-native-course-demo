@@ -1,12 +1,13 @@
 //近7日撞車的圖表頁面
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
-import { styles } from './crash-map-style';
-import { ButtonGroup } from 'react-native-elements';
+
+import _ from 'lodash/map';
 import firebase from 'firebase';
-import geofire from 'geofire';
+
 import { VictoryBar, VictoryChart, VictoryTheme } from 'victory-native';
-import _ from 'lodash';
+
+import { styles } from './crash-map-style';
 class CrashChart extends Component {
   constructor(props) {
     super(props);
@@ -39,7 +40,7 @@ class CrashChart extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1, backgroundColor: 'white', padding: 12 ,alignItems:'center'}}>
+      <View style={styles.chartContainer}>
         <VictoryChart theme={VictoryTheme.material} domainPadding={10}>
           <VictoryBar
             style={{ data: { fill: '#FFD05B' } }}
