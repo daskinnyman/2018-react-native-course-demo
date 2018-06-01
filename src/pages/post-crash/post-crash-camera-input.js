@@ -8,9 +8,12 @@ import {
   TouchableOpacity,
   Dimensions,
   AsyncStorage,
+  Alert,
   KeyboardAvoidingView
 } from 'react-native';
 import { Constants, Location, Permissions } from 'expo';
+
+import _ from 'lodash';
 import firebase from 'firebase';
 import GeoFire from 'geofire';
 import {
@@ -20,80 +23,97 @@ import {
   FormValidationMessage
 } from 'react-native-elements';
 
+import { styles } from './post-crash-style';
+
 const { width } = Dimensions.get('window');
 class PostCrashInput extends Component {
   constructor(props) {
     super(props);
     this.fbRef = firebase.database().ref();
-    this.geoRef = this.fbRef.child('_GEOFIRE');
-    this.geoFire = new GeoFire(this.geoRef);
+    this.suscribedSevice = null;
     this.state = {
       photo: this.props.navigation.state.params.url,
       latitude: null,
       longitude: null,
       MREASON: '啊就撞車',
+      permissions: null,
       place: null,
       postBy: null
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    await this._getPermissions();
     this._getGeolocation();
     this._getUserProfile();
   }
+
+  _getPermissions = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState(
+        {
+          Error: 'Permission to access location was denied'
+        },
+        () => {
+          Alert.alert('Permission to access location was denied');
+        }
+      );
+      return;
+    }
+    this.setState({ permissions: true });
+  };
 
   _getUserProfile = async () => {
     try {
       const uid = await AsyncStorage.getItem('@user:key');
       if (uid !== null) {
         // We have data!!
-        this.fbRef
-          .child(`users/${uid}`)
-          .once('value')
-          .then(snapshot => {
-            this.setState({ name: snapshot.val().name });
-          });
+        let res = await this.fbRef.child(`users/${uid}`).once('value');
+
+        this.setState({ name: res.val().name });
       }
-    } catch (err) {}
+    } catch (err) {
+      Alert.alert('發生錯誤啦');
+    }
   };
 
   _getGeolocation = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
+    if (this.state.permissions) {
+      let location = await Location.getCurrentPositionAsync({});
+      let place = await Expo.Location.reverseGeocodeAsync({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude
+      });
       this.setState({
-        Error: 'Permission to access location was denied'
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        place: place[0].name
       });
     }
-    let location = await Location.getCurrentPositionAsync({});
-    let place = await Expo.Location.reverseGeocodeAsync({
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude
-    });
-    console.log(place);
-    this.setState({
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-      place: place[0].name
-    });
   };
 
-  _handlePost = () => {
-    console.log(this.state);
+  _handlePost = async () => {
+    let geoRef = this.fbRef.child('_GEOFIRE');
+    let geoFire = new GeoFire(geoRef);
     let d = new Date().toLocaleDateString();
     let geofireIdx = d.replace(/\//g, '-');
     //以日期儲存方便繪製圖表
-    let key = this.fbRef.child(`posts/${d}`).push(this.state).key;
+    let key = this.fbRef
+      .child(`posts/${d}`)
+      .push(_.omit(this.state, 'permissions')).key;
     //提供geofire作為索引
-    this.geoFire
-      .set(`${geofireIdx}|${key}`, [this.state.latitude, this.state.longitude])
-      .then(
-        () => {
-          this.props.navigation.navigate('Home');
-        },
-        error => {
-          console.log('Error: ' + error);
-        }
-      );
+    try {
+      await geoFire.set(`${geofireIdx}|${key}`, [
+        this.state.latitude,
+        this.state.longitude
+      ]);
+
+      this.props.navigation.navigate('Home');
+    } catch (err) {
+      console.log(err);
+      Alert.alert('發生錯誤啦');
+    }
   };
 
   _handleChange = text => {
@@ -101,16 +121,14 @@ class PostCrashInput extends Component {
   };
 
   render() {
+    console.log(this.state.photo);
     return (
       <KeyboardAvoidingView
-        style={{ flex: 1, backgroundColor: 'white', padding: 12}}
+        style={styles.inputContainer}
         behavior="position"
         enabled
       >
-        <Image
-          style={{ width: width - 24, height: width - 24, borderRadius: 4 }}
-          source={{ uri: this.state.photo }}
-        />
+        <Image style={styles.previewImage} source={{ uri: this.state.photo }} />
         <FormLabel>位置</FormLabel>
         <FormInput
           value={this.state.place || `正在抓取位置`}
@@ -122,35 +140,12 @@ class PostCrashInput extends Component {
           placeholder={this.state.MREASON}
           onChangeText={this._handleChange}
         />
-        <View
-          style={{
-            alignItems: 'center'
-          }}
-        >
+        <View style={styles.postContainer}>
           <TouchableOpacity
-            style={
-              {
-                height: 50,
-                width: 50,
-                margin: 12,
-                borderRadius: 50,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: '#FFD05B',
-                shadowColor: '#000000',
-                shadowOpacity: 0.5,
-                shadowOffset: { widht: 0, height: 2 },
-                shadowRadius: 4
-              } //maybe is for ios only
-            }
+            style={styles.postButton}
             onPress={this._handlePost}
           >
-            <Icon
-              type="ionicon"
-              size={35}
-              style={{ color: '#4A4A4A' }}
-              name="ios-add"
-            />
+            <Icon type="ionicon" size={35} color="#4A4A4A" name="ios-add" />
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>

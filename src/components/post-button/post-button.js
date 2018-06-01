@@ -3,7 +3,6 @@ import { View, Image, TouchableOpacity, Text } from 'react-native';
 import { Icon } from 'react-native-elements';
 
 export const PostButton = props => {
-  console.log(props);
   const _handelNav = (pageName, params = null) => {
     if (params) {
       props.navigation.navigate(pageName, params);

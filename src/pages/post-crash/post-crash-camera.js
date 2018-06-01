@@ -10,6 +10,7 @@ import {
 import { Camera, Permissions } from 'expo';
 import firebase from 'firebase';
 import { Icon } from 'react-native-elements';
+import { styles } from './post-crash-style';
 class PostCrashCamera extends Component {
   constructor(props) {
     super(props);
@@ -29,35 +30,33 @@ class PostCrashCamera extends Component {
   _handleTakePicture = async () => {
     this.setState({ isLoading: true });
     if (this.camera) {
-      this.camera
-        .takePictureAsync({ quality: 0.2})
-        .then(async data => {
-
-          //必須使用blob，base64會無法上傳成功
-          const response = await fetch(data.uri);
-          const blob = await response.blob();
-          const metadata = {
-            contentType: blob.type
-          };
-          const name = blob._data.name;
-
-          this.storageRef
+      this.camera.takePictureAsync({ quality: 0.2 }).then(async data => {
+        //必須使用blob，base64會無法上傳成功
+        const response = await fetch(data.uri);
+        const blob = await response.blob();
+        const metadata = {
+          contentType: blob.type
+        };
+        const name = blob._data.name;
+        try {
+          let res = await this.storageRef
             .child(`pictures/${name}`)
-            .put(blob, metadata)
-            .then(snapshot => {
-              if (snapshot.state) {
-                this.setState({ isLoading: false });
-                snapshot.ref.getDownloadURL().then(url => {
-                  this.props.navigation.navigate('PostInput', {
-                    url
-                  });
-                });
-              } else {
-                this.setState({ isLoading: false });
-                Alert.alert('upload failed');
-              }
+            .put(blob, metadata);
+          if (res.state) {
+            this.setState({ isLoading: false });
+            let url = await res.ref.getDownloadURL();
+            this.props.navigation.navigate('PostInput', {
+              url:url
             });
-        });
+          } else {
+            this.setState({ isLoading: false });
+            Alert.alert('upload failed');
+          }
+        } catch (err) {
+          this.setState({ isLoading: false });
+          Alert.alert('upload failed');
+        }
+      });
     }
   };
 
@@ -69,68 +68,33 @@ class PostCrashCamera extends Component {
       return <Text>No access to camera</Text>;
     } else {
       return (
-        <View
-          style={{
-            flex: 1,
-            marginTop: -49
-          }}
-        >
+        <View style={styles.container}>
           <Camera
-            style={{
-              flex: 1
-            }}
+            style={styles.camera}
             type={this.state.type}
             ref={ref => {
               this.camera = ref;
             }}
           >
             {this.state.isLoading ? (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}
-              >
+              <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color="white" />
-                <Text style={{ color: 'white', margin: 8 }}>照片上傳中...</Text>
+                <Text style={styles.loadingText}>照片上傳中...</Text>
               </View>
             ) : (
-              <View
-                style={{
-                  flex: 1,
-                  backgroundColor: 'transparent',
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'flex-end'
-                }}
-              >
+              <View style={styles.controlButtonGroup}>
                 <TouchableOpacity
-                  style={
-                    {
-                      height: 80,
-                      width: 80,
-                      margin: 12,
-                      borderRadius: 80,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      backgroundColor: '#FFD05B',
-                      shadowColor: '#000000',
-                      shadowOpacity: 0.5,
-                      shadowOffset: { widht: 0, height: 2 },
-                      shadowRadius: 4
-                    } //maybe is for ios only
-                  }
+                  style={styles.shutter}
                   onPress={this._handleTakePicture}
                 >
                   <Icon
                     type="ionicon"
                     size={35}
-                    style={{ color: '#4A4A4A' }}
+                    color="#4A4A4A"
                     name="ios-camera-outline"
                   />
                 </TouchableOpacity>
-                <View style={{ position: 'absolute', right: 12, bottom: 12 }}>
+                <View style={styles.front}>
                   <Icon
                     type="ionicon"
                     name="ios-reverse-camera"
