@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { Text, View, Alert } from 'react-native';
 
-import _ from 'lodash/map';
 import firebase from 'firebase';
 
 import { VictoryBar, VictoryChart, VictoryTheme } from 'victory-native';
@@ -25,7 +24,6 @@ class CrashChart extends Component {
   _getCrashCount = async () => {
     let d = new Date().toLocaleDateString();
     let month = `${d.split('/')[0]}/${d.split('/')[1]}`;
-    let cnt = 0;
     try {
       let dates = await this.fbRef.child(`posts/${month}`).once('value');
       let datas = [];

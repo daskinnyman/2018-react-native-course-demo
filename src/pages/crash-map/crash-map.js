@@ -1,13 +1,6 @@
 //顯示撞車的地圖頁面
 import React, { Component } from 'react';
-import {
-  Text,
-  View,
-  Dimensions,
-  TouchableOpacity,
-  Image,
-  Alert
-} from 'react-native';
+import { View, Alert } from 'react-native';
 import { Location, Permissions, MapView } from 'expo';
 
 import firebase from 'firebase';
@@ -33,7 +26,6 @@ export default class CrashMap extends Component {
     //初始化state
     this.state = {
       permissions: null,
-      Error: null,
       showCircle: false,
       results: [],
       placeInfos: [],
@@ -65,14 +57,7 @@ export default class CrashMap extends Component {
   _getPermissions = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
-      this.setState(
-        {
-          Error: 'Permission to access location was denied'
-        },
-        () => {
-          Alert.alert('Permission to access location was denied');
-        }
-      );
+      Alert.alert('Permission to access location was denied');
       return;
     }
     this.setState({ permissions: true });

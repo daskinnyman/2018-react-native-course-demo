@@ -1,8 +1,11 @@
 //個人檔案頁面
 import React, { Component } from 'react';
 import { Text, View, AsyncStorage, Alert, Image } from 'react-native';
+
 import firebase from 'firebase';
+
 import { SocialIcon } from 'react-native-elements';
+
 import { styles } from './user-profile-style';
 class Profile extends Component {
   constructor(props) {

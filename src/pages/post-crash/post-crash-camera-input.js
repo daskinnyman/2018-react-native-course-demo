@@ -4,28 +4,21 @@ import {
   Text,
   View,
   Image,
-  Button,
   TouchableOpacity,
-  Dimensions,
   AsyncStorage,
   Alert,
   KeyboardAvoidingView
 } from 'react-native';
-import { Constants, Location, Permissions } from 'expo';
+import { Location, Permissions } from 'expo';
 
 import _ from 'lodash';
 import firebase from 'firebase';
 import GeoFire from 'geofire';
-import {
-  Icon,
-  FormLabel,
-  FormInput,
-  FormValidationMessage
-} from 'react-native-elements';
+
+import { Icon, FormLabel, FormInput } from 'react-native-elements';
 
 import { styles } from './post-crash-style';
 
-const { width } = Dimensions.get('window');
 class PostCrashInput extends Component {
   constructor(props) {
     super(props);

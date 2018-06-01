@@ -8,8 +8,11 @@ import {
   ActivityIndicator
 } from 'react-native';
 import { Camera, Permissions } from 'expo';
+
 import firebase from 'firebase';
+
 import { Icon } from 'react-native-elements';
+
 import { styles } from './post-crash-style';
 class PostCrashCamera extends Component {
   constructor(props) {

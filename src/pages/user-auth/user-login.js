@@ -1,8 +1,11 @@
 //使用者登入頁面
 import React from 'react';
 import { Text, View, Alert, AsyncStorage, Image } from 'react-native';
-import { SocialIcon } from 'react-native-elements';
+
 import firebase from 'firebase';
+
+import { SocialIcon } from 'react-native-elements';
+
 import { styles } from './user-login-style';
 export default class UserLogin extends React.Component {
   constructor(props) {
