@@ -70,30 +70,27 @@ export default class UserLogin extends React.Component {
               const { user, additionalUserInfo } = res;
               try {
                 await AsyncStorage.setItem('@user:key', user.uid);
-              } catch (error) {
-                // Error saving data
-              }
-              
-              let userData = {
-                name: user.displayName,
-                uid: user.uid,
-                avatar: user.photoURL
-              };
-              //新登入就創建資料
-              if (additionalUserInfo.isNewUser) {
-                firebase
-                  .database()
-                  .ref(`users/${user.uid}`)
-                  .set(userData);
-              }
-              //取得資料，成功後導頁
-              try {
+                let userData = {
+                  name: user.displayName,
+                  uid: user.uid,
+                  avatar: user.photoURL
+                };
+                //新登入就創建資料
+                if (additionalUserInfo.isNewUser) {
+                  firebase
+                    .database()
+                    .ref(`users/${user.uid}`)
+                    .set(userData);
+                }
                 let res = await firebase
                   .database()
                   .ref(`users/${user.uid}`)
                   .once('value');
                 this.props.navigation.navigate('Main');
-              } catch (err) {}
+              } catch (error) {
+                // Error saving data
+                Alert.alert(`發生錯誤啦！`);
+              }
             })
             .catch(err => {
               Alert.alert(`發生錯誤啦！`);

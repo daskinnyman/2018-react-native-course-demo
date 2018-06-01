@@ -1,6 +1,6 @@
 //近7日撞車的圖表頁面
 import React, { Component } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, Alert } from 'react-native';
 
 import _ from 'lodash/map';
 import firebase from 'firebase';
@@ -35,7 +35,9 @@ class CrashChart extends Component {
         datas.push({ x: el, y: len, y0: 0 });
         this.setState({ datas });
       });
-    } catch (err) {}
+    } catch (err) {
+      Alert.alert(`發生錯誤啦！`);
+    }
   };
 
   render() {
