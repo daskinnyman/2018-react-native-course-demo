@@ -1,3 +1,4 @@
+//集中所有功能頁面的樣式
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({

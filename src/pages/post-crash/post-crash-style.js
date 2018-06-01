@@ -1,6 +1,10 @@
 import { StyleSheet, Dimensions } from 'react-native';
 const { width } = Dimensions.get('window');
 export const styles = StyleSheet.create({
+  scrollView:{
+    flex:1,
+    backgroundColor:'white'
+  },
   container: {
     flex: 1,
     marginTop: -49

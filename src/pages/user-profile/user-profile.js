@@ -10,14 +10,18 @@ import { styles } from './user-profile-style';
 class Profile extends Component {
   constructor(props) {
     super(props);
+    //初始化firebase的位置
     this.fbRef = firebase.database().ref();
+
     this.state = {
-      name: null,
-      avatar: null
+      name: null, //使用者名稱
+      avatar: null //使用者頭像
     };
   }
 
+  //在元件掛在完成要執行的動作
   componentDidMount() {
+    //取得使用者個人檔案
     this._getUserProfile();
   }
 

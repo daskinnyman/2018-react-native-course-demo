@@ -116,7 +116,7 @@ class PostCrashInput extends Component {
 
   render() {
     return (
-      <ScrollView>
+      <ScrollView style={styles.scrollView}>
         <KeyboardAvoidingView
           style={styles.inputContainer}
           behavior="position"
