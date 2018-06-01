@@ -1,5 +1,5 @@
-import { StyleSheet } from 'react-native';
-
+import { StyleSheet, Dimensions } from 'react-native';
+const { width } = Dimensions.get('window');
 export const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
@@ -14,5 +14,17 @@ export const styles = StyleSheet.create({
     width: 110,
     backgroundColor: 'white'
   },
-  controlButtonGroup: { position: 'absolute', right: 12, bottom: 12 }
+  controlButtonGroup: { position: 'absolute', right: 12, bottom: 12 },
+  detailContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+    padding: 12
+  },
+  detailImage: { width: width - 24, height: width - 24, borderRadius: 4 },
+  detailText: {
+    marginTop: 12,
+    marginBottom: 4,
+    fontSize: 18,
+    fontWeight: 'bold'
+  }
 });

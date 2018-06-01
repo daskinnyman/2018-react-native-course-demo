@@ -1,17 +1,28 @@
 //顯示撞車的地圖頁面
 import React from 'react';
-import { Text, View, Dimensions, TouchableOpacity, Image } from 'react-native';
+import {
+  Text,
+  View,
+  Dimensions,
+  TouchableOpacity,
+  Image,
+  Alert
+} from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
+
+import * as firebase from 'firebase';
+import GeoFire from 'geofire';
+import axios from 'axios';
+import twd97tolatlng from 'twd97-to-latlng';
+
 import { Button } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
 import { styles } from './crash-map-style';
 import { MapMarker } from '../../components/carsh-marker/crash-marker';
 import { PostButton } from '../../components/post-button/post-button';
-import * as firebase from 'firebase';
-import GeoFire from 'geofire';
-import axios from 'axios';
-import twd97tolatlng from 'twd97-to-latlng';
+
 const API_URL = `http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=1262b7ec-ab34-4b71-83fb-c7ee75880f3f`;
+const { Circle } = MapView;
 export default class CrashMap extends React.Component {
   constructor(props) {
     super(props);
@@ -53,9 +64,14 @@ export default class CrashMap extends React.Component {
   _getPermissions = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
-      this.setState({
-        Error: 'Permission to access location was denied'
-      });
+      this.setState(
+        {
+          Error: 'Permission to access location was denied'
+        },
+        () => {
+          Alert.alert('Permission to access location was denied');
+        }
+      );
       return;
     }
     this.setState({ permissions: true });
@@ -75,7 +91,7 @@ export default class CrashMap extends React.Component {
         this._fetchOpenDataAndUpdate();
       }
     } catch (err) {
-      console.log(err);
+      Alert.alert('發生錯誤啦！');
     }
   };
 
@@ -105,7 +121,7 @@ export default class CrashMap extends React.Component {
       this.fbRef.child(`crashRank`).update({ ...placeInfos });
       this.setState({ placeInfos });
     } catch (err) {
-      console.log(err);
+      Alert.alert('發生錯誤啦！');
     }
   };
 
@@ -172,7 +188,7 @@ export default class CrashMap extends React.Component {
         nearbyUsers.push(res.val());
         this.setState({ results: nearbyUsers });
       } catch (err) {
-        console.log(err);
+        Alert.alert('發生錯誤啦！');
       }
     });
   };
@@ -191,7 +207,7 @@ export default class CrashMap extends React.Component {
    * @memberof CrashID事件的ID
    * @param crashID：撞車
    */
-  _handelNav = (pageName) => {
+  _handelNav = pageName => {
     this.props.navigation.navigate(pageName);
   };
 
@@ -206,7 +222,7 @@ export default class CrashMap extends React.Component {
     if (this.state.placeInfos) {
       return this.state.placeInfos.map((el, idx) => {
         return (
-          <MapView.Circle
+          <Circle
             key={idx}
             center={{ latitude: el.latitude, longitude: el.longitude }}
             radius={150}
