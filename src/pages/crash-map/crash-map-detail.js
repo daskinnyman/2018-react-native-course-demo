@@ -1,8 +1,7 @@
 //撞車地圖的細節頁面
-import React, { Component } from 'react';
-import { Text, View, Dimensions, Image } from 'react-native';
+import React from 'react';
+import { Text, View, Image } from 'react-native';
 import { styles } from './crash-map-style';
-const { width } = Dimensions.get('window');
 
 const CrashDetail = props => {
   const data = props.navigation.state.params.data;
