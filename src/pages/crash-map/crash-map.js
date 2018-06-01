@@ -6,6 +6,7 @@ import { Button } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
 import { styles } from './crash-map-style';
 import { MapMarker } from '../../components/carsh-marker/crash-marker';
+import { PostButton } from '../../components/post-button/post-button';
 import * as firebase from 'firebase';
 import GeoFire from 'geofire';
 import axios from 'axios';
@@ -260,30 +261,7 @@ export default class CrashMap extends React.Component {
           fontWeight="bold"
           buttonStyle={{ width: 110, backgroundColor: 'white' }}
         />
-        <TouchableOpacity
-          style={{
-            height: 80,
-            width: 80,
-            margin: 12,
-            borderRadius: 80,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#FFD05B', //maybe is for ios only
-            shadowColor: '#000000',
-            shadowOpacity: 0.5,
-            shadowOffset: { widht: 0, height: 2 },
-            shadowRadius: 4
-          }}
-          onPress={() => this._handelNav('Post')}
-        >
-          <Icon
-            type="ionicon"
-            size={35}
-            style={{ color: '#4A4A4A' }}
-            name="ios-camera-outline"
-          />
-          <Text style={{ color: '#4A4A4A', fontSize: 9 }}>發文</Text>
-        </TouchableOpacity>
+        <PostButton title="發文" navigation={this.props.navigation} />
         <View style={{ position: 'absolute', right: 12, bottom: 12 }}>
           <Icon
             type="ionicon"
