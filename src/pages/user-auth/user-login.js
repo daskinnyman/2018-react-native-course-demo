@@ -1,6 +1,6 @@
 //使用者登入頁面
 import React from 'react';
-import { Text, View, Alert, AsyncStorage,Image } from 'react-native';
+import { Text, View, Alert, AsyncStorage, Image } from 'react-native';
 import { SocialIcon } from 'react-native-elements';
 import firebase from 'firebase';
 import { styles } from './user-login-style';
@@ -37,7 +37,9 @@ export default class UserLogin extends React.Component {
       this.setState({
         isAuth: false
       });
-    } catch (err) {}
+    } catch (err) {
+      Alert.alert(`發生錯誤啦！`);
+    }
   };
   _logIn = async () => {
     //使用expo進行fb登入
@@ -71,6 +73,7 @@ export default class UserLogin extends React.Component {
               } catch (error) {
                 // Error saving data
               }
+              
               let userData = {
                 name: user.displayName,
                 uid: user.uid,
@@ -84,35 +87,40 @@ export default class UserLogin extends React.Component {
                   .set(userData);
               }
               //取得資料，成功後導頁
-              firebase
-                .database()
-                .ref(`users/${user.uid}`)
-                .once('value')
-                .then(() => {
-                  this.props.navigation.navigate('Main');
-                });
+              try {
+                let res = await firebase
+                  .database()
+                  .ref(`users/${user.uid}`)
+                  .once('value');
+                this.props.navigation.navigate('Main');
+              } catch (err) {}
             })
             .catch(err => {
-              console.log(err);
+              Alert.alert(`發生錯誤啦！`);
             });
         })
         .catch(error => {
-          // Handle Errors here.
+          Alert.alert(`發生錯誤啦！`);
         });
     }
   };
   render() {
     return (
       <View style={styles.container}>
-        <Image style = {{width:296,height:296}} source={require('../../../assets/intro.png')} />
-        <Text style= {{fontSize:18}}>加入歹霸底底隆，分享你撞車的點點滴滴</Text>
+        <Image
+          style={styles.backgroundImage}
+          source={require('../../../assets/intro.png')}
+        />
+        <Text style={styles.appDescritpion}>
+          加入歹霸底底隆，分享你撞車的點點滴滴
+        </Text>
         {this.state.isAuth === false && (
           <SocialIcon
-            style={{width:150,marginTop:32}}
-            title='使用臉書登入'
+            style={{ width: 150, marginTop: 32 }}
+            title="使用臉書登入"
             onPress={this._logIn}
             button
-            type='facebook'
+            type="facebook"
           />
         )}
       </View>

@@ -1,8 +1,9 @@
 //個人檔案頁面
 import React, { Component } from 'react';
-import { Text, View, AsyncStorage, Image } from 'react-native';
+import { Text, View, AsyncStorage, Alert, Image } from 'react-native';
 import firebase from 'firebase';
 import { SocialIcon } from 'react-native-elements';
+import { styles } from '../user-auth/user-login-style';
 class Profile extends Component {
   constructor(props) {
     super(props);
@@ -16,72 +17,47 @@ class Profile extends Component {
   componentDidMount() {
     this._getUserProfile();
   }
-  
-  _handleLogout=()=>{
-    firebase.auth().signOut().then(async()=> {
-      // Sign-out successful.
-     await AsyncStorage.removeItem('@user:key');
-     this.props.navigation.navigate('Auth')
-    }).catch(function (error) {
-      // An error happened.
-    });
-  }
+
+  _handleLogout = async () => {
+    try {
+      let res = await firebase.auth().signOut();
+      await AsyncStorage.removeItem('@user:key');
+      this.props.navigation.navigate('Auth');
+    } catch (err) {
+      Alert.alert(`發生錯誤啦！`);
+    }
+  };
 
   _getUserProfile = async () => {
     try {
       const uid = await AsyncStorage.getItem('@user:key');
       if (uid !== null) {
-        // We have data!!
-        this.fbRef
-          .child(`users/${uid}`)
-          .once('value')
-          .then(snapshot => {
-            this.setState({
-              name: snapshot.val().name,
-              avatar: snapshot.val().avatar
-            });
-          });
+        let res = await this.fbRef.child(`users/${uid}`).once('value');
+        this.setState({
+          name: res.val().name,
+          avatar: res.val().avatar
+        });
       }
-    } catch (err) {}
+    } catch (err) {
+      Alert.alert(`發生錯誤啦！`);
+    }
   };
 
   render() {
     return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: 'white',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}
-      >
-        <View
-          style={{
-            marginTop:-150,
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}
-        >
+      <View style={styles.container}>
+        <View style={styles.userProfileWrapper}>
           {this.state.avatar && (
-            <Image
-              style={{ width: 150, height: 150, borderRadius: 4 }}
-              source={{ uri: this.state.avatar }}
-            />
+            <Image style={styles.avatar} source={{ uri: this.state.avatar }} />
           )}
-          <Text
-            style={{
-              margin: 8
-            }}
-          >
-            {this.state.name || `無名氏`}
-          </Text>
+          <Text style={styles.username}>{this.state.name || `無名氏`}</Text>
         </View>
         <SocialIcon
-          style={{ width: 150, marginTop: 32 }}
-          title='登出帳號'
+          style={styles.logoutButton}
+          title="登出帳號"
           onPress={this._handleLogout}
           button
-          type='facebook'
+          type="facebook"
         />
       </View>
     );
