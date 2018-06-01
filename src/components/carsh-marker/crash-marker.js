@@ -5,9 +5,8 @@ import { MapView } from 'expo';
 const { Marker } = MapView;
 
 export const MapMarker = props => {
-  console.log(props);
   const _handleMarkerPress = () => {
-    props.navgation.navgate('Detail', { data: props.data });
+    props.navigation.navigate('Detail', { data: props.data });
   };
 
   return (

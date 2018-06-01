@@ -16,14 +16,10 @@ export default class CrashMap extends React.Component {
     super(props);
     //設定firebase
     this.fbRef = firebase.database().ref();
-    this.geoRef = this.fbRef.child('_GEOFIRE');
-    this.geoFire = new GeoFire(this.geoRef);
-    this.user = firebase.auth().currentUser;
     this.suscribedSevice = null;
     //初始化state
     this.state = {
-      Success: null,
-      isLoading: false,
+      permissions: null,
       Error: null,
       showCircle: false,
       results: [],
@@ -36,7 +32,9 @@ export default class CrashMap extends React.Component {
       current_lng: null
     };
   }
+
   async componentDidMount() {
+    await this._getPermissions();
     //取得geolocation
     await this._getGeolocation();
     //監看使用者位置
@@ -51,28 +49,33 @@ export default class CrashMap extends React.Component {
     }
   }
 
+  _getPermissions = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        Error: 'Permission to access location was denied'
+      });
+      return;
+    }
+    this.setState({ permissions: true });
+  };
   /**
    * 取得撞車的地區
    */
   _getCrashArea = async () => {
     let d = new Date().toLocaleDateString();
-    this.fbRef
-      .child(`crashRank`)
-      .once('value')
-      .then(snapshot => {
-        if (snapshot.val()) {
-          console.log(`====snapshot====`);
-          console.log(snapshot.val());
-          this.setState({
-            placeInfos: snapshot.val()
-          });
-        } else {
-          this._fetchOpenDataAndUpdate();
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    try {
+      let res = await this.fbRef.child(`crashRank`).once('value');
+      if (res.val()) {
+        this.setState({
+          placeInfos: res.val()
+        });
+      } else {
+        this._fetchOpenDataAndUpdate();
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   _fetchOpenDataAndUpdate = async () => {
@@ -104,22 +107,18 @@ export default class CrashMap extends React.Component {
       console.log(err);
     }
   };
+
   /**
    * 取得geolocation
    */
   _getGeolocation = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
+    if (this.state.permissions) {
+      let location = await Location.getCurrentPositionAsync({});
       this.setState({
-        Error: 'Permission to access location was denied'
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude
       });
     }
-
-    let location = await Location.getCurrentPositionAsync({});
-    this.setState({
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude
-    });
   };
 
   /**
@@ -127,31 +126,27 @@ export default class CrashMap extends React.Component {
    *
    */
   _watchGeolocation = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      this.setState({
-        Error: 'Permission to access location was denied'
-      });
+    if (this.state.permissions) {
+      this.suscribedSevice = await Location.watchPositionAsync(
+        {
+          enableHighAccuracy: true,
+          timeInterval: 30000,
+          distanceInterval: 20
+        },
+        location => {
+          this._getNearbyUser(
+            location.coords.latitude,
+            location.coords.longitude
+          );
+          this.setState({
+            current_lat: location.coords.latitude,
+            current_lng: location.coords.longitude
+          });
+        }
+      );
     }
-
-    this.suscribedSevice = await Location.watchPositionAsync(
-      {
-        enableHighAccuracy: true,
-        timeInterval: 30000,
-        distanceInterval: 20
-      },
-      location => {
-        this._getNearbyUser(
-          location.coords.latitude,
-          location.coords.longitude
-        );
-        this.setState({
-          current_lat: location.coords.latitude,
-          current_lng: location.coords.longitude
-        });
-      }
-    );
   };
+
   /**
    * 利用經緯度取得附近使用者
    * @param {any} lat
@@ -160,22 +155,24 @@ export default class CrashMap extends React.Component {
   _getNearbyUser = async (lat, lng) => {
     let center = [lat, lng];
     let nearbyUsers = [...this.state.results];
-    let geoQuery = this.geoFire.query({
+    let geoRef = this.fbRef.child('_GEOFIRE');
+    let geoFire = new GeoFire(geoRef);
+    let geoQuery = geoFire.query({
       center,
       radius: 10000
     });
-    geoQuery.on('key_entered', (key, location, distance) => {
+    geoQuery.on('key_entered', async (key, location, distance) => {
       let date = key.split('|')[0];
       let postId = key.split('|')[1];
       let d = date.replace(/-/g, '/');
 
-      this.fbRef
-        .child(`posts/${d}/${postId}`)
-        .once('value')
-        .then(snapshot => {
-          nearbyUsers.push(snapshot.val());
-          this.setState({ results: nearbyUsers });
-        });
+      try {
+        let res = await this.fbRef.child(`posts/${d}/${postId}`).once('value');
+        nearbyUsers.push(res.val());
+        this.setState({ results: nearbyUsers });
+      } catch (err) {
+        console.log(err);
+      }
     });
   };
 
@@ -188,9 +185,6 @@ export default class CrashMap extends React.Component {
     });
   };
 
-  _handleMarkerPress = el => {
-    this.props.navigation.navigate('Detail', { data: el });
-  };
   /**
    * 處理導頁，傳送user及選取的資料
    * @memberof CrashID事件的ID
@@ -202,12 +196,14 @@ export default class CrashMap extends React.Component {
     }
     this.props.navigation.navigate(pageName);
   };
+
   _handelResetRegion = () => {
     this.setState({
       latitude: this.state.current_lat,
       longitude: this.state.current_lng
     });
   };
+
   _renderCircle = () => {
     if (this.state.placeInfos) {
       return this.state.placeInfos.map((el, idx) => {
@@ -226,14 +222,14 @@ export default class CrashMap extends React.Component {
 
   _renderMarkers = () => {
     if (this.state.results) {
-      return this.state.results.map((el, idx) => 
-          <MapMarker
-            key={idx}
-            data={el}
-            navigation={this.props.navigation}
-            coordinate={{ latitude: el.latitude, longitude: el.longitude }}
-          />
-        );
+      return this.state.results.map((el, idx) => (
+        <MapMarker
+          key={idx}
+          data={el}
+          navigation={this.props.navigation}
+          coordinate={{ latitude: el.latitude, longitude: el.longitude }}
+        />
+      ));
     }
   };
 
