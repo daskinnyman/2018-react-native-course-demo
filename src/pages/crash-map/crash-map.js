@@ -1,10 +1,11 @@
 //顯示撞車的地圖頁面
 import React from 'react';
-import { Text, View, Dimensions, TouchableOpacity ,Image} from 'react-native';
+import { Text, View, Dimensions, TouchableOpacity, Image } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import { Button } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
 import { styles } from './crash-map-style';
+import { MapMarker } from '../../components/carsh-marker/crash-marker';
 import * as firebase from 'firebase';
 import GeoFire from 'geofire';
 import axios from 'axios';
@@ -18,6 +19,7 @@ export default class CrashMap extends React.Component {
     this.geoRef = this.fbRef.child('_GEOFIRE');
     this.geoFire = new GeoFire(this.geoRef);
     this.user = firebase.auth().currentUser;
+    this.suscribedSevice = null;
     //初始化state
     this.state = {
       Success: null,
@@ -41,7 +43,12 @@ export default class CrashMap extends React.Component {
     await this._watchGeolocation();
 
     await this._getCrashArea();
+  }
 
+  componentWillUnmount() {
+    if (this.suscribedSevice) {
+      this.suscribedSevice.remove();
+    }
   }
 
   /**
@@ -127,9 +134,10 @@ export default class CrashMap extends React.Component {
       });
     }
 
-    Location.watchPositionAsync(
+    this.suscribedSevice = await Location.watchPositionAsync(
       {
         enableHighAccuracy: true,
+        timeInterval: 30000,
         distanceInterval: 20
       },
       location => {
@@ -180,9 +188,9 @@ export default class CrashMap extends React.Component {
     });
   };
 
-  _handleMarkerPress=(el)=>{
-    this.props.navigation.navigate('Detail',{data:el});
-  }
+  _handleMarkerPress = el => {
+    this.props.navigation.navigate('Detail', { data: el });
+  };
   /**
    * 處理導頁，傳送user及選取的資料
    * @memberof CrashID事件的ID
@@ -194,12 +202,12 @@ export default class CrashMap extends React.Component {
     }
     this.props.navigation.navigate(pageName);
   };
-  _handelResetRegion=()=>{
+  _handelResetRegion = () => {
     this.setState({
       latitude: this.state.current_lat,
-      longitude: this.state.current_lng,
+      longitude: this.state.current_lng
     });
-  }
+  };
   _renderCircle = () => {
     if (this.state.placeInfos) {
       return this.state.placeInfos.map((el, idx) => {
@@ -218,31 +226,17 @@ export default class CrashMap extends React.Component {
 
   _renderMarkers = () => {
     if (this.state.results) {
-      return this.state.results.map((el, idx) => {
-        return <MapView.Marker key={idx} onPress={()=>this._handleMarkerPress(el)} description={el.MREASON} coordinate={{ latitude: el.latitude, longitude: el.longitude }} >
-          <View style={{
-      width:50,
-      height:50,
-      borderRadius:25,
-      backgroundColor:'#eee',
-      marginBottom:10
-  }}>
-                 {el.photo?
-                 <Image
-                 style={{
-      width:50,
-      height:50,
-      borderRadius:25,
-      backgroundColor:'#eee',
-      marginBottom:10
-  }}
-                 source={{uri:el.photo}} />:
-                 null}
-                 </View>
-        </MapView.Marker>;
-      });
+      return this.state.results.map((el, idx) => 
+          <MapMarker
+            key={idx}
+            data={el}
+            navigation={this.props.navigation}
+            coordinate={{ latitude: el.latitude, longitude: el.longitude }}
+          />
+        );
     }
   };
+
   render() {
     return (
       <View style={styles.container}>
@@ -261,10 +255,10 @@ export default class CrashMap extends React.Component {
           {this.state.showCircle ? this._renderCircle() : this._renderMarkers()}
         </MapView>
         <Button
-          title={this.state.showCircle?"查看附近車禍":"查看撞車熱點"}
+          title={this.state.showCircle ? '查看附近車禍' : '查看撞車熱點'}
           raised
           color="#4A4A4A"
-          onPress={()=>this.setState({showCircle:!this.state.showCircle})}
+          onPress={() => this.setState({ showCircle: !this.state.showCircle })}
           borderRadius={55}
           fontSize={12}
           fontWeight="bold"
