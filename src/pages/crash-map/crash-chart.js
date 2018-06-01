@@ -38,14 +38,6 @@ class CrashChart extends Component {
   };
 
   render() {
-    const sampleData = [
-      { x: 1, y: 20, y0: 0 },
-      { x: 2, y: 34, y0: 0 },
-      { x: 3, y: 50, y0: 0 },
-      { x: 4, y: 40, y0: 0 },
-      { x: 5, y: 70, y0: 0 }
-    ];
-    console.log(this.state.datas);
     return (
       <View style={{ flex: 1, backgroundColor: 'white', padding: 12 }}>
         <VictoryChart theme={VictoryTheme.material} domainPadding={10}>

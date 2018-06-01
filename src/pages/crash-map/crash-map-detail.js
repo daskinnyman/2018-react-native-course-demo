@@ -2,12 +2,10 @@
 import React, { Component } from 'react';
 import { Text, View, Dimensions, Image } from 'react-native';
 import { styles } from './crash-map-style';
-
 const { width } = Dimensions.get('window');
 class CrashDetail extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
     this.data = this.props.navigation.state.params.data;
   }
   render() {
