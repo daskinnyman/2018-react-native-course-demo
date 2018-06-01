@@ -191,10 +191,7 @@ export default class CrashMap extends React.Component {
    * @memberof CrashID事件的ID
    * @param crashID：撞車
    */
-  _handelNav = (pageName, params = null) => {
-    if (params) {
-      this.props.navigation.navigate(pageName, params);
-    }
+  _handelNav = (pageName) => {
     this.props.navigation.navigate(pageName);
   };
 
@@ -259,10 +256,10 @@ export default class CrashMap extends React.Component {
           borderRadius={55}
           fontSize={12}
           fontWeight="bold"
-          buttonStyle={{ width: 110, backgroundColor: 'white' }}
+          buttonStyle={styles.switchButton}
         />
         <PostButton title="發文" navigation={this.props.navigation} />
-        <View style={{ position: 'absolute', right: 12, bottom: 12 }}>
+        <View style={styles.controlButtonGroup}>
           <Icon
             type="ionicon"
             name="ios-stats"
