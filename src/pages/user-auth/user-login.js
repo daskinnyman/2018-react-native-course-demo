@@ -51,54 +51,43 @@ export default class UserLogin extends React.Component {
     );
     //判斷登入狀態
     if (type === 'success') {
-      //利用臉書api取得user資料
-      const response = await fetch(
-        `https://graph.facebook.com/me?access_token=${token}`
-      );
-      const credential = firebase.auth.FacebookAuthProvider.credential(token);
-      //讓登入狀態可以保存起來
-      firebase
-        .auth()
-        .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-        .then(() => {
-          //利用credential登入firebase
+      try {
+        //利用臉書api取得user資料
+        const response = await fetch(
+          `https://graph.facebook.com/me?access_token=${token}`
+        );
+        const credential = firebase.auth.FacebookAuthProvider.credential(token);
+        //讓登入狀態可以保存起來
+        await firebase
+          .auth()
+          .setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+        let res = await firebase
+          .auth()
+          .signInAndRetrieveDataWithCredential(credential);
+
+        const { user, additionalUserInfo } = res;
+
+        await AsyncStorage.setItem('@user:key', user.uid);
+        let userData = {
+          name: user.displayName,
+          uid: user.uid,
+          avatar: user.photoURL
+        };
+        //新登入就創建資料
+        if (additionalUserInfo.isNewUser) {
           firebase
-            .auth()
-            .signInAndRetrieveDataWithCredential(credential)
-            .then(async res => {
-              //登入成功的邏輯
-              const { user, additionalUserInfo } = res;
-              try {
-                await AsyncStorage.setItem('@user:key', user.uid);
-                let userData = {
-                  name: user.displayName,
-                  uid: user.uid,
-                  avatar: user.photoURL
-                };
-                //新登入就創建資料
-                if (additionalUserInfo.isNewUser) {
-                  firebase
-                    .database()
-                    .ref(`users/${user.uid}`)
-                    .set(userData);
-                }
-                let res = await firebase
-                  .database()
-                  .ref(`users/${user.uid}`)
-                  .once('value');
-                this.props.navigation.navigate('Main');
-              } catch (error) {
-                // Error saving data
-                Alert.alert(`發生錯誤啦！`);
-              }
-            })
-            .catch(err => {
-              Alert.alert(`發生錯誤啦！`);
-            });
-        })
-        .catch(error => {
-          Alert.alert(`發生錯誤啦！`);
-        });
+            .database()
+            .ref(`users/${user.uid}`)
+            .set(userData);
+        }
+        await firebase
+          .database()
+          .ref(`users/${user.uid}`)
+          .once('value');
+        this.props.navigation.navigate('Main');
+      } catch (err) {
+        Alert.alert(`發生錯誤啦！`);
+      }
     }
   };
   render() {

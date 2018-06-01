@@ -1,5 +1,5 @@
 //顯示撞車的地圖頁面
-import React from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   View,
@@ -8,15 +8,14 @@ import {
   Image,
   Alert
 } from 'react-native';
-import { Constants, Location, Permissions, MapView } from 'expo';
+import { Location, Permissions, MapView } from 'expo';
 
 import firebase from 'firebase';
 import GeoFire from 'geofire';
 import axios from 'axios';
 import twd97tolatlng from 'twd97-to-latlng';
 
-import { Button } from 'react-native-elements';
-import { Icon } from 'react-native-elements';
+import { Button, Icon } from 'react-native-elements';
 import { MapMarker } from '../../components/carsh-marker/crash-marker';
 import { PostButton } from '../../components/post-button/post-button';
 
@@ -24,7 +23,8 @@ import { styles } from './crash-map-style';
 
 const API_URL = `http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=1262b7ec-ab34-4b71-83fb-c7ee75880f3f`;
 const { Circle } = MapView;
-export default class CrashMap extends React.Component {
+
+export default class CrashMap extends Component {
   constructor(props) {
     super(props);
     //設定firebase

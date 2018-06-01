@@ -6,6 +6,10 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    paddingTop:100
+    paddingTop: 100
+  },
+  backgroundImage: { width: 296, height: 296 },
+  appDescritpion:{
+    fontSize: 18
   }
 });
