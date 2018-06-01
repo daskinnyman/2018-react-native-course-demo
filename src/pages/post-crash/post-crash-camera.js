@@ -32,24 +32,21 @@ class PostCrashCamera extends Component {
       this.camera
         .takePictureAsync({ quality: 0.2})
         .then(async data => {
-          console.log(data);
+
+          //必須使用blob，base64會無法上傳成功
           const response = await fetch(data.uri);
           const blob = await response.blob();
-          console.log(blob);
           const metadata = {
             contentType: blob.type
           };
           const name = blob._data.name;
-          console.log(name);
 
           this.storageRef
             .child(`pictures/${name}`)
             .put(blob, metadata)
             .then(snapshot => {
-              console.log(snapshot);
               if (snapshot.state) {
                 this.setState({ isLoading: false });
-                Alert.alert(`upload success`);
                 snapshot.ref.getDownloadURL().then(url => {
                   this.props.navigation.navigate('PostInput', {
                     url
