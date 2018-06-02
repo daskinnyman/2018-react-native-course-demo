@@ -4,6 +4,7 @@ import { Text, View, Image } from 'react-native';
 import { styles } from './crash-map-style';
 
 const CrashDetail = props => {
+  //從主頁面傳送過來的資料
   const data = props.navigation.state.params.data;
   return (
     <View style={styles.detailContainer}>

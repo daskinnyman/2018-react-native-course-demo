@@ -5,6 +5,9 @@ import { MapView } from 'expo';
 const { Marker } = MapView;
 
 export const MapMarker = props => {
+  /**
+   *導頁並且傳送該貼文資料
+   */
   const _handleMarkerPress = () => {
     props.navigation.navigate('Detail', { data: props.data });
   };
