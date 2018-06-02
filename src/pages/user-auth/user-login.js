@@ -46,10 +46,10 @@ export default class UserLogin extends Component {
 
       //登入失敗，將isAuth修改為false
       this.setState({ isAuth: false });
-      Alert.alert(`登入失敗`);
     } catch (err) {
       //捕捉錯誤，若有就使用alert提醒使用者
-      Alert.alert(`發生錯誤啦！`);
+      console.log(err);
+      Alert.alert(err);
     }
   };
 
@@ -111,7 +111,8 @@ export default class UserLogin extends Component {
         this.props.navigation.navigate('Main');
       } catch (err) {
         //捕捉錯誤，若有就使用alert提醒使用者
-        Alert.alert(`發生錯誤啦！`);
+        //console.log(err);
+        Alert.alert(err);
       }
     }
   };
