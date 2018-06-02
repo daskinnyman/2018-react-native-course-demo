@@ -1,5 +1,5 @@
 //使用者登入頁面
-import React from 'react';
+import React, { Component } from 'react';
 import { Text, View, Alert, AsyncStorage, Image } from 'react-native';
 
 import firebase from 'firebase';
@@ -7,43 +7,55 @@ import firebase from 'firebase';
 import { SocialIcon } from 'react-native-elements';
 
 import { styles } from './user-login-style';
-export default class UserLogin extends React.Component {
+export default class UserLogin extends Component {
   constructor(props) {
     super(props);
+    //初始化firebase的ref位置
     this.fbRef = firebase.database().ref();
-    this.state = {
-      isAuth: null
-    };
+    this.state = { isAuth: null };
   }
 
+  //在元件掛載完成要執行的動作
   componentDidMount() {
+    //取得使用者個人檔案
     this._getUserProfile();
   }
 
+  /**
+   *取得使用者檔案
+   */
   _getUserProfile = async () => {
     try {
+      //從本地端取得使用者uid
       const uid = await AsyncStorage.getItem('@user:key');
+
       if (uid !== null) {
-        // We have data!!
-        this.fbRef
-          .child(`users/${uid}`)
-          .once('value')
-          .then(snapshot => {
-            this.setState({
-              name: snapshot.val().name,
-              isAuth: true
-            });
-            this.props.navigation.navigate('Main');
-          });
+        //如果uid不為空，拿uid去firebase取得使用者資料
+        let res = await this.fbRef.child(`users/${uid}`).once('value');
+
+        //登入成功，將isAuth修改為true
+        this.setState({
+          name: res.val().name,
+          isAuth: true
+        });
+
+        //登入成功後導頁到主頁面
+        this.props.navigation.navigate('Main');
         return;
       }
-      this.setState({
-        isAuth: false
-      });
+
+      //登入失敗，將isAuth修改為false
+      this.setState({ isAuth: false });
+      Alert.alert(`登入失敗`);
     } catch (err) {
+      //捕捉錯誤，若有就使用alert提醒使用者
       Alert.alert(`發生錯誤啦！`);
     }
   };
+
+  /**
+   *處理使用者登入
+   */
   _logIn = async () => {
     //使用expo進行fb登入
     const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync(
@@ -52,6 +64,7 @@ export default class UserLogin extends React.Component {
         permissions: ['public_profile']
       }
     );
+
     //判斷登入狀態
     if (type === 'success') {
       try {
@@ -64,18 +77,24 @@ export default class UserLogin extends React.Component {
         await firebase
           .auth()
           .setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
+        //使用從expo登入取得的credential登入firebase
         let res = await firebase
           .auth()
           .signInAndRetrieveDataWithCredential(credential);
 
         const { user, additionalUserInfo } = res;
 
+        //登入成功，把uid存入手機
         await AsyncStorage.setItem('@user:key', user.uid);
+
+        //使用者的欄位
         let userData = {
           name: user.displayName,
           uid: user.uid,
           avatar: user.photoURL
         };
+
         //新登入就創建資料
         if (additionalUserInfo.isNewUser) {
           firebase
@@ -83,12 +102,15 @@ export default class UserLogin extends React.Component {
             .ref(`users/${user.uid}`)
             .set(userData);
         }
+        //取得使用者資料
         await firebase
           .database()
           .ref(`users/${user.uid}`)
           .once('value');
+        //導頁至主畫面
         this.props.navigation.navigate('Main');
       } catch (err) {
+        //捕捉錯誤，若有就使用alert提醒使用者
         Alert.alert(`發生錯誤啦！`);
       }
     }
