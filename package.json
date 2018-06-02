@@ -1,6 +1,9 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "private": true,
+  "author": {
+    "name": "Alex Chen"
+  },
   "dependencies": {
     "axios": "^0.18.0",
     "expo": "^27.0.1",
