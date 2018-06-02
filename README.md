@@ -1,10 +1,11 @@
 # 2018 React-Native 課程範例
 
-台北直直撞，利用open data取得台北市前50肇事路口，以及讓使用者發布貼文的方式，建立公同編輯的車禍地圖
+### 台北直直撞
 
-使用expo react-native開發，ios/android可以用
+利用open data取得台北市前50肇事路口，以及讓使用者發布貼文的方式，建立公同編輯的車禍地圖，使用expo react-native開發，ios/android都可以用。
 
 如果喜歡的話就給我一顆星星吧🌟
+<hr />
 
 使用方式：
 
@@ -24,4 +25,4 @@ npm i  or  yarn
 ```
 4. 用expo開啟專案
   
-3. ok
+5. ok
