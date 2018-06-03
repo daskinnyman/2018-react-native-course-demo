@@ -1,7 +1,6 @@
 //集中處理個人檔案功能頁面，一次匯出
 import React from 'react';
 import { createStackNavigator } from 'react-navigation';
-import { Button, Keyboard, Image, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-elements';
 
 //功能頁面

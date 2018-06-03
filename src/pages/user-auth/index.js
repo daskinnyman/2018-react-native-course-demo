@@ -1,6 +1,5 @@
 import React from 'react';
 import { createStackNavigator } from 'react-navigation';
-import { Button, Keyboard, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import userLoginPage from './user-login';

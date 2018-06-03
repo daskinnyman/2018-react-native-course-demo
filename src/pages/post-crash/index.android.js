@@ -2,12 +2,8 @@ import React from 'react';
 import { createStackNavigator, Header } from 'react-navigation';
 import { LinearGradient } from 'expo';
 import {
-  Button,
-  Keyboard,
   View,
-  StyleSheet,
-  Image,
-  TouchableOpacity
+  StyleSheet
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import PostCrashCameraPage from './post-crash-camera';
