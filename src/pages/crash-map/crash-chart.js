@@ -35,20 +35,27 @@ class CrashChart extends Component {
       let dates = await this.fbRef.child(`posts/${month}`).once('value');
 
       let datas = [];
-      //把取得的資料轉為陣列，並覽騙所有資料，藉以取得日期
-      Object.keys(dates.val()).map(async el => {
-        //el是本每月有撞車的日期
-        //利用el把所有的車禍日期取出
-        let data = await this.fbRef.child(`posts/${month}/${el}`).once('value');
-        //暫存每天的車禍數
-        let len = Object.keys(data.val()).length;
-        //存入陣列
-        datas.push({ x: el, y: len, y0: 0 });
-        //把陣列設定給state
-        this.setState({ datas });
-      });
+      if (dates.val()) {
+        //把取得的資料轉為陣列，並覽騙所有資料，藉以取得日期
+        Object.keys(dates.val()).map(async el => {
+          //el是本每月有撞車的日期
+          //利用el把所有的車禍日期取出
+          let data = await this.fbRef
+            .child(`posts/${month}/${el}`)
+            .once('value');
+          //暫存每天的車禍數
+          let len = Object.keys(data.val()).length;
+          //存入陣列
+          datas.push({ x: el, y: len, y0: 0 });
+          //把陣列設定給state
+          this.setState({ datas });
+        });
+        return;
+      }
+      Alert.alert(`查無資料!`);
     } catch (err) {
       //捕捉錯誤，若有就使用alert提醒使用者
+      console.log(err);
       Alert.alert(`發生錯誤啦！`);
     }
   };

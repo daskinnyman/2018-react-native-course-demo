@@ -18,14 +18,14 @@ export const ProfileStack = createStackNavigator({
         borderBottomWidth: 0,
         padding: 12
       },
-      headerLeft: (
-        <Icon
-          type="ionicon"
-          name="ios-arrow-back"
-          size={30}
-          onPress={() => navigation.navigate('Home')}
-        />
-      )
+      // headerLeft: (
+      //   <Icon
+      //     type="ionicon"
+      //     name="ios-arrow-back"
+      //     size={30}
+      //     onPress={() => navigation.navigate('Home')}
+      //   />
+      // )
     })
   }
 });

@@ -26,6 +26,7 @@ export default class CrashMap extends Component {
     this.suscribedService = null;
     //初始化state
     this.state = {
+      isPositionPrepared:false,//判斷是否已取得位置
       permissions: null, //取得location的權限
       showCircle: false, //是否顯示撞車區域
       results: [], //附近貼文
@@ -140,6 +141,7 @@ export default class CrashMap extends Component {
       let location = await Location.getCurrentPositionAsync({});
       //把經緯度，地址存入state
       this.setState({
+        isPositionPrepared:true,
         latitude: location.coords.latitude,
         longitude: location.coords.longitude
       });
@@ -292,7 +294,7 @@ export default class CrashMap extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <MapView
+        {this.state.isPositionPrepared&&<MapView
           loadingEnabled
           style={styles.map}
           showsUserLocation={true}
@@ -305,7 +307,7 @@ export default class CrashMap extends Component {
           }}
         >
           {this.state.showCircle ? this._renderCircle() : this._renderMarkers()}
-        </MapView>
+        </MapView>}
         <Button
           title={this.state.showCircle ? '查看附近車禍' : '查看撞車熱點'}
           raised
