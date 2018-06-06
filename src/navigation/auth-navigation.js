@@ -4,7 +4,6 @@ import { DrawerNavigator } from './app-navigation';
 import { Button, Keyboard, Image, TouchableOpacity } from 'react-native';
 import { AuthStack } from '../pages/user-auth/index';
 
-
 export const AppRouter = createStackNavigator(
   {
     Auth: { screen: AuthStack, navigationOptions: { gesturesEnabled: false } },
@@ -14,7 +13,7 @@ export const AppRouter = createStackNavigator(
     }
   },
   {
-    headerMode:'none',
+    headerMode: 'none',
     initialRouteName: 'Auth',
     navigationOptions: { gesturesEnabled: false }
   }

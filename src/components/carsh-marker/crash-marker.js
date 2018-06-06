@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Image } from 'react-native';
 import { MapView } from 'expo';
+import { styles } from './crash-marker-style';
 
 const { Marker } = MapView;
 
@@ -19,24 +20,10 @@ export const MapMarker = props => {
       description={props.data.MREASON}
       coordinate={props.coordinate}
     >
-      <View
-        style={{
-          width: 50,
-          height: 50,
-          borderRadius: 25,
-          backgroundColor: '#eee',
-          marginBottom: 10
-        }}
-      >
+      <View style={styles.markerIconContainer}>
         {props.data.photo ? (
           <Image
-            style={{
-              width: 50,
-              height: 50,
-              borderRadius: 25,
-              backgroundColor: '#eee',
-              marginBottom: 10
-            }}
+            style={styles.markerPhoto}
             source={{ uri: props.data.photo }}
           />
         ) : null}
