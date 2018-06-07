@@ -254,7 +254,7 @@ export default class CrashMap extends Component {
    *畫出前50大車禍路口
    */
   _renderCircle = () => {
-    if (this.state.placeInfos) {
+    if (this.state.placeInfos.length>0) {
       return this.state.placeInfos.map((el, idx) => {
         return (
           <Circle
@@ -276,7 +276,7 @@ export default class CrashMap extends Component {
    *畫出附近貼文
    */
   _renderMarkers = () => {
-    if (this.state.results) {
+    if (this.state.results.length>0) {
       return this.state.results.map((el, idx) => (
         <MapMarker
           key={idx}
